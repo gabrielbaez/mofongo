@@ -14,16 +14,22 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Bundle install
+      - name: Install system dependencies
         run: |
-          bundle lock --add-platform x86_64-linux
-          bundle install --jobs 4
+          sudo apt-get update
+          sudo apt-get install -y build-essential libpq-dev nodejs yarn
 
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: .ruby-version
-          bundler-cache: true
+          bundler-cache: false
+
+      - name: Install Ruby dependencies
+        run: |
+          gem install bundler
+          bundle lock --add-platform x86_64-linux
+          bundle install --jobs 4
 
       - name: Scan for common Rails security vulnerabilities using static analysis
         run: bin/brakeman --no-pager
@@ -35,16 +41,22 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Bundle install
+      - name: Install system dependencies
         run: |
-          bundle lock --add-platform x86_64-linux
-          bundle install --jobs 4
+          sudo apt-get update
+          sudo apt-get install -y build-essential libpq-dev nodejs yarn
 
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: .ruby-version
-          bundler-cache: true
+          bundler-cache: false
+
+      - name: Install Ruby dependencies
+        run: |
+          gem install bundler
+          bundle lock --add-platform x86_64-linux
+          bundle install --jobs 4
 
       - name: Scan for security vulnerabilities in JavaScript dependencies
         run: bin/importmap audit
@@ -55,16 +67,22 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Bundle install
+      - name: Install system dependencies
         run: |
-          bundle lock --add-platform x86_64-linux
-          bundle install --jobs 4
+          sudo apt-get update
+          sudo apt-get install -y build-essential libpq-dev nodejs yarn
 
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: .ruby-version
-          bundler-cache: true
+          bundler-cache: false
+
+      - name: Install Ruby dependencies
+        run: |
+          gem install bundler
+          bundle lock --add-platform x86_64-linux
+          bundle install --jobs 4
 
       - name: Lint code for consistent style
         run: bin/rubocop -f github
@@ -88,23 +106,22 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Bundle install
+      - name: Install system dependencies
         run: |
-          bundle lock --add-platform x86_64-linux
-          bundle install --jobs 4
+          sudo apt-get update
+          sudo apt-get install -y build-essential libpq-dev nodejs yarn chromium-browser chromium-chromedriver
 
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: .ruby-version
-          bundler-cache: true
+          bundler-cache: false
 
-      - name: Install Chrome and ChromeDriver
+      - name: Install Ruby dependencies
         run: |
-          sudo apt-get update
-          sudo apt-get install -y chromium-browser chromium-chromedriver
-          chromium-browser --version
-          chromedriver --version
+          gem install bundler
+          bundle lock --add-platform x86_64-linux
+          bundle install --jobs 4
 
       - name: Set up test database
         env:
@@ -136,6 +153,5 @@ jobs:
         uses: actions/upload-artifact@v4
         if: failure()
         with:
-          name: screenshots
-          path: ${{ github.workspace }}/tmp/screenshots
-          if-no-files-found: ignore
+          name: failed-system-test-screenshots
+          path: tmp/screenshots/
