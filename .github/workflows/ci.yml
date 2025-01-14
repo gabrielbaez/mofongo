@@ -23,13 +23,13 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ env.RUBY_VERSION }}
-          bundler-cache: true
+          bundler-cache: false
 
-      - name: Install Ruby dependencies
+      - name: Bundle config and install
         run: |
-          gem install bundler
+          bundle config --local path vendor/bundle
           bundle lock --add-platform x86_64-linux
-          bundle install --jobs 4 --path vendor/bundle
+          bundle install --jobs 4
 
       - name: Scan for common Rails security vulnerabilities using static analysis
         run: bundle exec brakeman --no-pager
@@ -45,13 +45,13 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ env.RUBY_VERSION }}
-          bundler-cache: true
+          bundler-cache: false
 
-      - name: Install Ruby dependencies
+      - name: Bundle config and install
         run: |
-          gem install bundler
+          bundle config --local path vendor/bundle
           bundle lock --add-platform x86_64-linux
-          bundle install --jobs 4 --path vendor/bundle
+          bundle install --jobs 4
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -72,13 +72,13 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ env.RUBY_VERSION }}
-          bundler-cache: true
+          bundler-cache: false
 
-      - name: Install Ruby dependencies
+      - name: Bundle config and install
         run: |
-          gem install bundler
+          bundle config --local path vendor/bundle
           bundle lock --add-platform x86_64-linux
-          bundle install --jobs 4 --path vendor/bundle
+          bundle install --jobs 4
 
       - name: Lint code for consistent style
         run: bundle exec rubocop -f github
@@ -106,13 +106,13 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ env.RUBY_VERSION }}
-          bundler-cache: true
+          bundler-cache: false
 
-      - name: Install Ruby dependencies
+      - name: Bundle config and install
         run: |
-          gem install bundler
+          bundle config --local path vendor/bundle
           bundle lock --add-platform x86_64-linux
-          bundle install --jobs 4 --path vendor/bundle
+          bundle install --jobs 4
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -163,3 +163,14 @@ jobs:
         with:
           name: failed-system-test-screenshots
           path: tmp/screenshots/
+
+      - name: Cache dependencies
+        uses: actions/cache@v3
+        with:
+          path: |
+            vendor/bundle
+            node_modules
+            /usr/bin/chromium-browser
+          key: ${{ runner.os }}-deps-${{ hashFiles('**/Gemfile.lock', '**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-deps-
