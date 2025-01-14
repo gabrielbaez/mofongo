@@ -10,9 +10,19 @@ services:
 
   web:
     build: .
-    command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails s -p 3000 -b '0.0.0.0'"
+    command: bundle exec rails s -p 3000 -b '0.0.0.0'
     volumes:
-      - .:/app
+      - ./app:/app/app
+      - ./bin:/app/bin
+      - ./config:/app/config
+      - ./db:/app/db
+      - ./lib:/app/lib
+      - ./public:/app/public
+      - ./public/assets:/app/public/assets
+      - ./test:/app/test
+      - ./tmp:/app/tmp
+      - ./Gemfile:/app/Gemfile
+      - ./Gemfile.lock:/app/Gemfile.lock
       - bundle:/usr/local/bundle
     ports:
       - "3000:3000"

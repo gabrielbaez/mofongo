@@ -30,10 +30,6 @@ RUN useradd -m -s /bin/bash appuser && \
     mkdir -p /usr/local/bundle && \
     chown -R appuser:appuser /usr/local/bundle
 
-# Copy entrypoint script and make it executable
-COPY entrypoint.sh /usr/local/bin/
-RUN chmod +x /usr/local/bin/entrypoint.sh
-
 WORKDIR /app
 
 # Switch to appuser for all subsequent operations
@@ -51,8 +47,14 @@ RUN bundle install
 # Copy the rest of the application
 COPY --chown=appuser:appuser . .
 
+# Make entrypoint script executable and ensure Unix line endings
+USER root
+RUN sed -i 's/\r$//' /app/entrypoint.sh && \
+    chmod +x /app/entrypoint.sh
+USER appuser
+
 # Set up entrypoint
-ENTRYPOINT ["entrypoint.sh"]
+ENTRYPOINT ["/app/entrypoint.sh"]
 
 # Configure the main process to run when running the image
 EXPOSE 3000

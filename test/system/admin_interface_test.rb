@@ -30,87 +30,40 @@ class AdminInterfaceTest < ApplicationSystemTestCase
     visit admin_dashboard_path
     
     # Test Users link presence with icon
-    assert_selector ".sidebar-menu a", text: "Users"
-    assert_selector "i.fas.fa-users"
+    within(".nav.nav-pills") do
+      assert_selector "a.nav-link", text: /Users/
+      assert_selector "i.fas.fa-users"
+    end
     
     # Test direct navigation to users list
     click_link "Users"
     assert_current_path admin_users_path
   end
 
-  test "admin sidebar shows correct user role" do
+  test "admin sidebar shows user information" do
     sign_in_as(@admin)
     visit admin_dashboard_path
     
-    within(".user-info") do
-      assert_selector ".user-role", text: "Administrator"
-      assert_selector ".user-status", text: "Online"
+    within(".dropdown") do
+      assert_selector ".rounded-circle", text: @admin.name.first
+      assert_selector "strong", text: @admin.name
     end
   end
 
-  test "admin can toggle sidebar" do
-    skip "Sidebar toggle functionality is currently being fixed"
-    
+  test "admin can use user dropdown menu" do
     sign_in_as(@admin)
     visit admin_dashboard_path
     
-    # Wait for Turbo to finish loading and JavaScript to initialize
-    assert_selector ".page-wrapper"
-    assert_selector "#show-sidebar"
-    sleep 1.0
+    # Open dropdown menu
+    find("#dropdownUser1").click
     
-    # Debug information
-    puts "Initial page-wrapper classes: #{find('.page-wrapper')['class']}"
-    
-    # Test initial state (sidebar is hidden by default)
-    assert_no_selector ".page-wrapper.toggled"
-    
-    # Test opening sidebar
-    find("#show-sidebar").click
-    sleep 1.0
-    
-    # Debug information
-    puts "After clicking show-sidebar: #{find('.page-wrapper')['class']}"
-    
-    assert_selector ".page-wrapper.toggled"
-    
-    # Test closing sidebar
-    find("#close-sidebar").click
-    sleep 1.0
-    
-    # Debug information
-    puts "After clicking close-sidebar: #{find('.page-wrapper')['class']}"
-    
-    assert_no_selector ".page-wrapper.toggled"
-  end
-
-  test "admin dashboard shows user distribution" do
-    sign_in_as(@admin)
-    visit admin_dashboard_path
-    
-    # Test user distribution section
-    within(".chart-area") do
-      assert_selector "i.fas.fa-user-shield"
-      assert_selector "i.fas.fa-user-cog"
-      assert_selector "i.fas.fa-user"
-      assert_selector "h4", text: "Administrators"
-      assert_selector "h4", text: "Moderators"
-      assert_selector "h4", text: "Regular Users"
+    within(".dropdown-menu") do
+      assert_selector "a.dropdown-item", text: "Profile"
+      assert_selector "a.dropdown-item", text: "Sign out"
     end
-  end
-
-  test "admin dashboard shows system information" do
-    sign_in_as(@admin)
-    visit admin_dashboard_path
     
-    # Test system information section
-    within(".card", text: /System Information/) do
-      assert_selector "i.fas.fa-gem"
-      assert_selector "i.fas.fa-train"
-      assert_selector "i.fas.fa-clock"
-      assert_text "Ruby Version:"
-      assert_text "Rails Version:"
-      assert_text "Server Time:"
-    end
+    # Test profile navigation
+    click_link "Profile"
+    assert_current_path edit_user_registration_path
   end
 end

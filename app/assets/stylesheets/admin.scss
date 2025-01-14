@@ -2,16 +2,9 @@
 @import 'bootstrap/scss/bootstrap';
 @import 'bootstrap-icons/font/bootstrap-icons';
 
-$sidebar-bg-color: #1d1d1d;
-$submenu-bg-color: #2b2b2b;
-$submenu-bg-color-collapsed: #2b2b2b;
-$sidebar-color: #adadad;
-$highlight-color: #fff;
-$icon-bg-color: rgba(255, 255, 255, 0.05);
-$icon-size: 20px;
-
-body {
-  min-height: 100vh;
+html, body {
+  height: 100%;
+  overflow: hidden;
 }
 
 .bi {
@@ -22,9 +15,13 @@ body {
   fill: currentColor;
 }
 
-.nav-flush .nav-link {
-  border-radius: 0;
-}
+$sidebar-bg-color: #1d1b31;
+$submenu-bg-color: #2b2b2b;
+$submenu-bg-color-collapsed: #2b2b2b;
+$sidebar-color: #adadad;
+$highlight-color: #fff;
+$icon-bg-color: rgba(255, 255, 255, 0.05);
+$icon-size: 20px;
 
 // Dark theme overrides for sidebar
 .bg-dark {
@@ -50,6 +47,16 @@ body {
   }
 }
 
+// Main content area
+main {
+  height: 100%;
+  background-color: #f8f9fa;
+  
+  .container-fluid {
+    max-width: 1600px;
+  }
+}
+
 .scrollarea {
   overflow-y: auto;
 }
@@ -68,8 +75,16 @@ body {
   height: 100vh;
 
   &.toggled {
-    .sidebar-wrapper {
-      left: 0px;
+    #sidebar {
+      left: 0;
+    }
+    
+    .page-content {
+      margin-left: 260px;
+    }
+    
+    #show-sidebar {
+      left: 260px;
     }
   }
 }
@@ -80,250 +95,163 @@ body {
   top: 10px;
   border-radius: 0 4px 4px 0px;
   width: 35px;
-  transition-delay: 0.3s;
+  transition: all .3s;
   z-index: 999;
 }
 
-.sidebar-wrapper {
-  height: 100%;
-  max-height: 100%;
+#sidebar {
+  width: 260px;
+  height: 100vh;
+  max-height: 100vh;
   position: fixed;
   top: 0;
-  left: -280px;
-  width: 280px;
+  left: -260px;
+  z-index: 999;
   background: $sidebar-bg-color;
   color: $sidebar-color;
-  transition: left .3s ease;
-
+  transition: all .3s;
+  overflow-y: auto;
+  box-shadow: 0 0 8px 0 rgba(0,0,0,.4);
+  
+  .sidebar-content {
+    max-height: calc(100% - 30px);
+    height: calc(100% - 30px);
+    overflow-y: auto;
+    position: relative;
+  }
+  
   .sidebar-brand {
     padding: 1rem 1.2rem;
     display: flex;
     align-items: center;
     justify-content: space-between;
-
+    
     a {
-      text-transform: uppercase;
-      font-weight: bold;
-      flex-grow: 1;
       color: $highlight-color;
       text-decoration: none;
-    }
-
-    #close-sidebar {
-      cursor: pointer;
-      font-size: 20px;
-      transition: color .3s ease;
-
-      &:hover {
-        color: $highlight-color;
-      }
+      font-weight: bold;
     }
   }
-
+  
   .sidebar-header {
-    padding: 20px;
-    overflow: hidden;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-
+    padding: 1rem;
+    border-top: 1px solid rgba(255,255,255,.1);
+    border-bottom: 1px solid rgba(255,255,255,.1);
+    
     .user-pic {
-      float: left;
-      width: 60px;
-      padding: 2px;
-      border-radius: 12px;
-      margin-right: 15px;
-      overflow: hidden;
+      margin-bottom: 0.5rem;
     }
-
+    
     .user-info {
-      float: left;
-      color: $highlight-color;
-
-      > span {
+      span {
         display: block;
       }
-
-      .user-role {
-        font-size: 12px;
-        color: $sidebar-color;
+      .user-name {
+        font-weight: bold;
       }
-
+      .user-role {
+        font-size: 0.8rem;
+      }
       .user-status {
-        font-size: 11px;
-        margin-top: 4px;
-
+        font-size: 0.8rem;
         i {
-          font-size: 8px;
+          font-size: 0.6rem;
           margin-right: 4px;
           color: #5cb85c;
         }
       }
     }
   }
-
+  
   .sidebar-menu {
-    padding-bottom: 10px;
-
+    padding-bottom: 1rem;
+    
     .header-menu span {
       font-weight: bold;
-      font-size: 14px;
-      padding: 15px 20px 5px 20px;
-      display: inline-block;
+      font-size: 0.8rem;
+      padding: 0.8rem 1.2rem;
+      display: block;
+      text-transform: uppercase;
+      color: #999;
     }
-
+    
     ul {
       list-style-type: none;
       padding: 0;
       margin: 0;
-
+      
       li a {
-        display: inline-block;
-        width: 100%;
+        display: flex;
+        align-items: center;
         text-decoration: none;
-        position: relative;
-        padding: 8px 30px 8px 20px;
         color: $sidebar-color;
-
+        padding: 0.6rem 1.2rem;
+        
         i {
-          margin-right: 10px;
-          font-size: $icon-size;
-          width: 30px;
-          height: 30px;
-          line-height: 30px;
+          margin-right: 0.8rem;
+          font-size: 1.1rem;
+          width: 20px;
           text-align: center;
-          border-radius: 4px;
         }
-
+        
         &:hover {
-          color: $highlight-color;
-          background: $submenu-bg-color;
-
-          i {
-            background: $icon-bg-color;
+          background: rgba(255,255,255,.1);
+        }
+      }
+    }
+    
+    .sidebar-dropdown {
+      > a:after {
+        content: "\f105";
+        font-family: "Font Awesome 5 Free";
+        font-weight: 900;
+        margin-left: auto;
+        transition: transform .3s;
+      }
+      
+      &.active {
+        > a:after {
+          transform: rotate(90deg);
+        }
+        
+        .sidebar-submenu {
+          display: block !important;
+        }
+      }
+      
+      .sidebar-submenu {
+        ul {
+          padding: 0.5rem 0;
+          background: rgba(0,0,0,.2);
+          
+          li a {
+            padding-left: 3rem;
+            font-size: 0.9rem;
           }
         }
-
-        &.active {
-          color: $highlight-color;
-          background: $submenu-bg-color;
-
-          i {
-            background: $icon-bg-color;
-          }
-        }
-      }
-    }
-  }
-
-  .sidebar-dropdown {
-    > a:after {
-      content: "\f105";
-      font-family: "Font Awesome 5 Free";
-      font-weight: 900;
-      font-style: normal;
-      display: inline-block;
-      font-style: normal;
-      font-variant: normal;
-      text-rendering: auto;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-      text-align: center;
-      background: 0 0;
-      position: absolute;
-      right: 15px;
-      top: 14px;
-      transition: transform .3s ease;
-    }
-
-    &.active > a:after {
-      transform: rotate(90deg);
-      right: 15px;
-    }
-  }
-
-  .sidebar-submenu {
-    display: none;
-
-    ul {
-      padding: 5px 0;
-    }
-
-    li {
-      padding-left: 25px;
-      font-size: 13px;
-
-      a {
-        &:before {
-          content: "\f111";
-          font-family: "Font Awesome 5 Free";
-          font-weight: 400;
-          font-style: normal;
-          display: inline-block;
-          text-align: center;
-          text-decoration: none;
-          -webkit-font-smoothing: antialiased;
-          -moz-osx-font-smoothing: grayscale;
-          margin-right: 10px;
-          font-size: 8px;
-        }
-
-        &.active:before {
-          content: "\f192";
-        }
-      }
-    }
-  }
-
-  &.toggled .sidebar-dropdown.active .sidebar-submenu {
-    display: block;
-  }
-
-  .sidebar-footer {
-    position: absolute;
-    width: 100%;
-    bottom: 0;
-    display: flex;
-    background: $submenu-bg-color;
-
-    > a,
-    .logout-link {
-      flex-grow: 1;
-      text-align: center;
-      height: 30px;
-      line-height: 30px;
-      color: $sidebar-color;
-      position: relative;
-      background: none;
-      border: none;
-      cursor: pointer;
-
-      &:hover {
-        color: $highlight-color;
-      }
-
-      .notification {
-        position: absolute;
-        top: 0;
       }
     }
   }
 }
 
 .page-content {
+  height: 100vh;
   margin-left: 0;
-  transition: margin-left .3s ease;
-
-  .toggled & {
-    margin-left: 280px;
-  }
+  transition: all .3s;
+  overflow-x: hidden;
+  padding: 1rem;
 }
 
-@media screen and (min-width: 768px) {
-  .page-wrapper.toggled {
-    padding-left: 280px;
-
-    .page-content {
-      padding-left: 0;
+// Dark theme styles
+.chiller-theme {
+  background: #f4f7fa;
+  
+  #sidebar {
+    background: $sidebar-bg-color;
+    
+    .sidebar-menu ul li:hover > a,
+    .sidebar-menu .sidebar-dropdown.active > a {
+      background: rgba(255,255,255,.1);
     }
   }
 }

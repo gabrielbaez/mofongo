@@ -17,5 +17,14 @@ do
 done
 echo "PostgreSQL is up and running!"
 
+# Run database migrations
+bundle exec rails db:migrate
+echo "Database migrations completed!"
+
+# Precompile assets
+echo "Precompiling assets..."
+bundle exec rails assets:precompile
+echo "Assets precompiled!"
+
 # Execute the main process
 exec "$@"
