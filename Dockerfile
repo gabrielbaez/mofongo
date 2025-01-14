@@ -16,6 +16,8 @@ RUN apt-get update -qq && \
     netcat-openbsd \
     nodejs \
     npm \
+    chromium \
+    chromium-driver \
     && rm -rf /var/lib/apt/lists/*
 
 # Install yarn
@@ -36,6 +38,11 @@ WORKDIR /app
 
 # Switch to appuser for all subsequent operations
 USER appuser
+
+# Set up Chrome environment variables
+ENV CHROME_BIN=/usr/bin/chromium \
+    CHROME_PATH=/usr/lib/chromium/ \
+    CHROMEDRIVER_PATH=/usr/bin/chromedriver
 
 # Copy Gemfile and install dependencies
 COPY --chown=appuser:appuser Gemfile ./

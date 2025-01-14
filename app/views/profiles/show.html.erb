@@ -22,45 +22,8 @@
           </div>
 
           <div class="row mb-3">
-            <div class="col-sm-4"><strong>Date of Birth:</strong></div>
-            <div class="col-sm-8"><%= @user.date_of_birth.strftime('%B %d, %Y') %></div>
-          </div>
-
-          <div class="row mb-3">
-            <div class="col-sm-4"><strong>Address:</strong></div>
-            <div class="col-sm-8"><%= @user.address %></div>
-          </div>
-
-          <div class="row mb-3">
-            <div class="col-sm-4"><strong>City:</strong></div>
-            <div class="col-sm-8"><%= @user.city %></div>
-          </div>
-
-          <div class="row mb-3">
-            <div class="col-sm-4"><strong>State:</strong></div>
-            <div class="col-sm-8"><%= @user.state %></div>
-          </div>
-
-          <div class="row mb-3">
-            <div class="col-sm-4"><strong>Zip Code:</strong></div>
-            <div class="col-sm-8"><%= @user.zip_code %></div>
-          </div>
-
-          <div class="row mb-3">
-            <div class="col-sm-4"><strong>Country:</strong></div>
-            <div class="col-sm-8"><%= @user.country %></div>
-          </div>
-
-          <div class="row mb-3">
-            <div class="col-sm-4"><strong>Member Since:</strong></div>
-            <div class="col-sm-8"><%= @user.created_at.strftime('%B %d, %Y') %></div>
-          </div>
-
-          <div class="row mb-3">
             <div class="col-sm-4"><strong>Role:</strong></div>
-            <div class="col-sm-8"><span class="badge bg-<%= @user.administrator? ? 'danger' : (@user.moderator? ? 'warning' : 'primary') %>">
-              <%= @user.role_id.titleize %>
-            </span></div>
+            <div class="col-sm-8"><%= @user.role_id.titleize %></div>
           </div>
 
           <div class="text-center mt-4">

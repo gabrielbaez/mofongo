@@ -1,0 +1,208 @@
+<div class="container-fluid">
+  <h1>Admin Dashboard</h1>
+
+  <!-- Stats Cards -->
+  <div class="row g-4 mb-4">
+    <div class="col-xl-3 col-md-6">
+      <div class="card h-100">
+        <div class="card-body">
+          <div class="row align-items-center">
+            <div class="col">
+              <h6 class="text-uppercase fw-bold text-primary mb-1">Total Users</h6>
+              <h2 class="mb-0 fw-bold"><%= @total_users %></h2>
+            </div>
+            <div class="col-auto">
+              <div class="bg-primary bg-opacity-10 p-3 rounded">
+                <svg class="bi text-primary" width="32" height="32"><use xlink:href="#people"/></svg>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6">
+      <div class="card h-100">
+        <div class="card-body">
+          <div class="row align-items-center">
+            <div class="col">
+              <h6 class="text-uppercase fw-bold text-success mb-1">New Users Today</h6>
+              <h2 class="mb-0 fw-bold"><%= @new_users_today %></h2>
+            </div>
+            <div class="col-auto">
+              <div class="bg-success bg-opacity-10 p-3 rounded">
+                <svg class="bi text-success" width="32" height="32"><use xlink:href="#person-plus"/></svg>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6">
+      <div class="card h-100">
+        <div class="card-body">
+          <div class="row align-items-center">
+            <div class="col">
+              <h6 class="text-uppercase fw-bold text-info mb-1">Users This Week</h6>
+              <h2 class="mb-0 fw-bold"><%= @new_users_this_week %></h2>
+            </div>
+            <div class="col-auto">
+              <div class="bg-info bg-opacity-10 p-3 rounded">
+                <svg class="bi text-info" width="32" height="32"><use xlink:href="#graph-up"/></svg>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6">
+      <div class="card h-100">
+        <div class="card-body">
+          <div class="row align-items-center">
+            <div class="col">
+              <h6 class="text-uppercase fw-bold text-warning mb-1">Users This Month</h6>
+              <h2 class="mb-0 fw-bold"><%= @new_users_this_month %></h2>
+            </div>
+            <div class="col-auto">
+              <div class="bg-warning bg-opacity-10 p-3 rounded">
+                <svg class="bi text-warning" width="32" height="32"><use xlink:href="#calendar3"/></svg>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <!-- User Role Distribution -->
+    <div class="col-lg-6">
+      <div class="card shadow mb-4">
+        <div class="card-header py-3">
+          <h6 class="m-0 fw-bold">User Role Distribution</h6>
+        </div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-borderless align-middle mb-0">
+              <thead>
+                <tr>
+                  <th>Role</th>
+                  <th>Users</th>
+                  <th>Percentage</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% total = @role_distribution.values.sum %>
+                <% @role_distribution.each do |role, count| %>
+                  <tr>
+                    <td>
+                      <div class="d-flex align-items-center gap-2">
+                        <div class="bg-primary bg-opacity-10 p-2 rounded">
+                          <svg class="bi text-primary" width="16" height="16">
+                            <use xlink:href="#<%= role.downcase == 'Admin' ? 'shield-lock' : (role.downcase == 'Moderator' ? 'shield-check' : 'person') %>"/>
+                          </svg>
+                        </div>
+                        <%= role.titleize %>
+                      </div>
+                    </td>
+                    <td><%= count %> users</td>
+                    <td>
+                      <div class="d-flex align-items-center gap-2">
+                        <div class="progress flex-grow-1" style="height: 8px;">
+                          <div class="progress-bar" role="progressbar" style="width: <%= (count.to_f / total * 100).round %>%"></div>
+                        </div>
+                        <span class="text-muted"><%= (count.to_f / total * 100).round %>%</span>
+                      </div>
+                    </td>
+                  </tr>
+                <% end %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent Users -->
+    <div class="col-lg-6">
+      <div class="card shadow mb-4">
+        <div class="card-header py-3">
+          <h6 class="m-0 fw-bold">Recent Users</h6>
+        </div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-borderless align-middle mb-0">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Role</th>
+                  <th>Joined</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% @recent_users.each do |user| %>
+                  <tr>
+                    <td>
+                      <div class="d-flex align-items-center gap-2">
+                        <div class="rounded-circle bg-secondary bg-opacity-10 text-secondary d-flex align-items-center justify-content-center" style="width: 32px; height: 32px;">
+                          <%= user.name.first %>
+                        </div>
+                        <%= user.name %>
+                      </div>
+                    </td>
+                    <td><%= user.email %></td>
+                    <td><span class="badge bg-primary"><%= user.role_id.titleize %></span></td>
+                    <td><%= time_ago_in_words(user.created_at) %> ago</td>
+                  </tr>
+                <% end %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<% content_for :styles do %>
+  <style>
+    .bg-primary {
+      background-color: #007bff !important;
+    }
+    .bg-success {
+      background-color: #28a745 !important;
+    }
+    .bg-info {
+      background-color: #17a2b8 !important;
+    }
+    .bg-warning {
+      background-color: #ffc107 !important;
+    }
+    .bg-opacity-10 {
+      opacity: 0.1;
+    }
+    .text-primary {
+      color: #007bff !important;
+    }
+    .text-success {
+      color: #28a745 !important;
+    }
+    .text-info {
+      color: #17a2b8 !important;
+    }
+    .text-warning {
+      color: #ffc107 !important;
+    }
+    .progress {
+      background-color: #e9ecef;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .progress-bar {
+      background-color: #007bff;
+    }
+  </style>
+<% end %>

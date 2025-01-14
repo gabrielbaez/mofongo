@@ -12,22 +12,12 @@ class User < ApplicationRecord
     administrator: 2
   }
 
-  # Callbacks
-  after_create :set_default_role
-  before_create :check_first_user
-
   validates :username, presence: true, uniqueness: true
   validates :name, presence: true
-  validates :date_of_birth, presence: true
-  validates :address, presence: true
-  validates :city, presence: true
-  validates :state, presence: true
-  validates :zip_code, presence: true
-  validates :country, presence: true
+  validates :email, presence: true, uniqueness: true
 
   # Virtual attribute for accepting terms
   attr_accessor :terms_of_service
-
   validates :terms_of_service, acceptance: true
 
   def admin?
@@ -36,19 +26,6 @@ class User < ApplicationRecord
 
   def moderator_or_admin?
     moderator? || administrator?
-  end
-
-  private
-
-  def set_default_role
-    return if role_id.present?
-    self.user!
-  end
-
-  def check_first_user
-    if User.count.zero?
-      self.administrator!
-    end
   end
 
   def self.states
