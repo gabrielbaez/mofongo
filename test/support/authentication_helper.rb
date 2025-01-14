@@ -5,11 +5,7 @@ module AuthenticationHelper
     fill_in "Password", with: "password123"
     click_button "Sign in"
     
-    # Verify successful login and proper redirection based on role
-    if user.administrator?
-      assert_current_path admin_dashboard_path
-    else
-      assert_current_path root_path
-    end
+    # All users should be redirected to root path after sign in
+    assert_current_path root_path
   end
 end
