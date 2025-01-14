@@ -24,16 +24,12 @@
 
   <div class="mb-3">
     <%= f.label :content, class: "form-label" %>
-    <%= f.rich_text_area :content, 
-        class: "trix-content",
+    <%= f.text_area :content, 
+        class: "form-control",
         data: { 
-          controller: "trix-uploads",
-          direct_upload_url: admin_direct_uploads_path,
-          blob_url_template: rails_service_blob_path(":signed_id", ":filename")
+          controller: "tinymce",
+          tinymce_target: "editor"
         } %>
-    <small class="form-text text-muted">
-      You can upload images by dragging and dropping them into the editor or using the image button.
-    </small>
   </div>
 
   <div class="mb-3">
@@ -65,35 +61,14 @@
 <%= javascript_include_tag "https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/js/tom-select.complete.min.js" %>
 <%= stylesheet_link_tag "https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/css/tom-select.bootstrap5.min.css" %>
 
-<%# Add Trix styles %>
-<%= stylesheet_link_tag "trix/dist/trix" %>
+<%# Add TinyMCE styles %>
+<%= stylesheet_link_tag "https://cdn.tiny.cloud/1/no-api-key/tinymce/5/tinymce.min.css" %>
 
-<%# Add custom styles for Trix editor %>
+<%# Add custom styles for TinyMCE editor %>
 <style>
-  .trix-content {
+  .tox-tinymce {
     min-height: 400px;
     max-height: 800px;
     overflow-y: auto;
-  }
-  
-  .trix-button-group--file-tools {
-    display: none !important;
-  }
-  
-  .attachment--preview {
-    margin: 0.6em 0;
-    text-align: center;
-    width: 100%;
-  }
-  
-  .attachment--preview .attachment__caption {
-    color: #666;
-    font-size: 0.9em;
-    padding: 0.3em 0;
-  }
-  
-  .attachment--preview img {
-    max-width: 100%;
-    height: auto;
   }
 </style>

@@ -49,6 +49,18 @@ yarn install
 rails db:create db:migrate db:seed
 ```
 
+## Default Admin Credentials
+
+After setting up the application, you can log in with the following default admin credentials:
+
+```
+Username: admin
+Password: welcome1
+Email: admin@somewhereemail.com
+```
+
+⚠️ **Important**: For security reasons, please change these credentials immediately after your first login.
+
 4. Start the server:
 ```bash
 docker compose up

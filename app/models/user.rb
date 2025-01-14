@@ -25,7 +25,7 @@ class User < ApplicationRecord
   has_many :blog_series, dependent: :destroy
   has_many :blog_post_drafts, dependent: :destroy
   has_many :comments, dependent: :destroy
-  has_many :likes, dependent: :destroy
+  has_many :likes, class_name: 'BlogPostLike', dependent: :destroy
   has_many :gallery_images, dependent: :destroy
   has_many :user_achievements, dependent: :destroy
   has_many :achievements, through: :user_achievements

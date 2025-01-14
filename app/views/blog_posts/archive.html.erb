@@ -1,0 +1,60 @@
+<div class="row">
+  <%# Main Content %>
+  <div class="col-md-8">
+    <div class="blog-archive">
+      <h1 class="mb-4">Blog Archive</h1>
+
+      <% @posts_by_date.each do |date, posts| %>
+        <div class="archive-month mb-4">
+          <h2 class="h4 mb-3"><%= date.strftime("%B %Y") %></h2>
+          
+          <div class="list-group">
+            <% posts.each do |post| %>
+              <%= link_to blog_post_path(post), class: "list-group-item list-group-item-action" do %>
+                <div class="d-flex w-100 justify-content-between">
+                  <h3 class="h5 mb-1"><%= post.title %></h3>
+                  <small class="text-muted">
+                    <%= post.published_at.strftime("%b %d") %>
+                  </small>
+                </div>
+                
+                <% if post.summary.present? %>
+                  <p class="mb-1 text-muted"><%= truncate(post.summary, length: 120) %></p>
+                <% end %>
+                
+                <% if post.tags.any? %>
+                  <div class="mt-2">
+                    <% post.tags.each do |tag| %>
+                      <span class="badge bg-secondary"><%= tag.name %></span>
+                    <% end %>
+                  </div>
+                <% end %>
+              <% end %>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <%# Sidebar with Archive Links %>
+  <div class="col-md-4">
+    <div class="card">
+      <div class="card-header">
+        <h3 class="h5 mb-0">Archive</h3>
+      </div>
+      <div class="list-group list-group-flush">
+        <% @archive_dates.each do |date, count| %>
+          <%= link_to archive_blog_posts_path(
+                year: date.year,
+                month: date.month
+              ),
+              class: "list-group-item list-group-item-action d-flex justify-content-between align-items-center" do %>
+            <%= date.strftime("%B %Y") %>
+            <span class="badge bg-primary rounded-pill"><%= count %></span>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

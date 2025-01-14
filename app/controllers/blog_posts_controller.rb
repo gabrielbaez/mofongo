@@ -1,5 +1,5 @@
 class BlogPostsController < ApplicationController
-  before_action :authenticate_user!, except: [:index, :show, :feed, :archive]
+  before_action :authenticate_user!, except: [:index, :show, :archive, :feed]
   before_action :set_blog_post, only: [:show, :edit, :update, :destroy]
   before_action :authorize_user!, only: [:edit, :update, :destroy]
   
@@ -16,6 +16,8 @@ class BlogPostsController < ApplicationController
     if params[:series_id].present?
       @blog_posts = @blog_posts.where(blog_series_id: params[:series_id])
     end
+    
+    @archive_dates = calculate_archive_dates
     
     set_meta_tags(
       title: "Blog Posts",
@@ -110,6 +112,35 @@ class BlogPostsController < ApplicationController
     end
   end
   
+  def archive
+    @posts = BlogPost.published
+                    .includes(:user, :tags)
+                    .order(published_at: :desc)
+
+    # Group posts by date for the main archive display
+    @posts_by_date = @posts.group_by { |post| post.published_at.beginning_of_month }
+
+    # Create a count of posts by date for the sidebar
+    @archive_dates = calculate_archive_dates
+
+    set_meta_tags(
+      title: "Blog Archive",
+      description: "Browse our collection of articles by date",
+      type: "website"
+    )
+  end
+
+  def feed
+    @blog_posts = BlogPost.published
+                         .includes(:user, :tags)
+                         .order(published_at: :desc)
+                         .limit(20)
+
+    respond_to do |format|
+      format.rss { render layout: false }
+    end
+  end
+  
   private
   
   def set_blog_post
@@ -148,12 +179,21 @@ class BlogPostsController < ApplicationController
   end
   
   def set_meta_tags(options = {})
-    content_for :meta_title, options[:title]
-    content_for :meta_description, options[:description]
-    content_for :meta_type, options[:type]
-    content_for :meta_image, options[:image] if options[:image].present?
-    content_for :meta_published_time, options[:published_time] if options[:published_time].present?
-    content_for :meta_author, options[:author] if options[:author].present?
-    content_for :meta_tags, options[:tags] if options[:tags].present?
+    @meta_title = options[:title]
+    @meta_description = options[:description]
+    @meta_type = options[:type]
+    @meta_image = options[:image] if options[:image].present?
+    @meta_published_time = options[:published_time] if options[:published_time].present?
+    @meta_author = options[:author] if options[:author].present?
+    @meta_tags = options[:tags] if options[:tags].present?
+  end
+  
+  def calculate_archive_dates
+    BlogPost.published
+            .group(:published_at)
+            .select('DATE_TRUNC(\'month\', published_at) as month, COUNT(*) as count')
+            .group('DATE_TRUNC(\'month\', published_at)')
+            .order('month DESC')
+            .map { |result| [result.month.to_date, result.count] }
   end
 end
