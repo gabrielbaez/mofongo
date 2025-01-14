@@ -1,0 +1,139 @@
+<div class="container py-4">
+  <div class="row">
+    <div class="col-lg-8">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Your Feed</h1>
+        
+        <%= link_to blog_posts_path, class: "btn btn-outline-primary" do %>
+          <i class="bi bi-grid"></i> Browse All Posts
+        <% end %>
+      </div>
+      
+      <% if @posts.any? %>
+        <div class="posts">
+          <% @posts.each do |post| %>
+            <div class="card mb-4">
+              <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                  <div>
+                    <%= link_to profile_path(post.user), class: "text-decoration-none" do %>
+                      <span class="fw-bold text-dark"><%= post.user.display_name %></span>
+                    <% end %>
+                    <span class="text-muted mx-1">•</span>
+                    <span class="text-muted">
+                      <%= time_ago_in_words(post.published_at) %> ago
+                    </span>
+                  </div>
+                  
+                  <% if post.blog_category %>
+                    <span class="badge bg-secondary">
+                      <%= post.blog_category.name %>
+                    </span>
+                  <% end %>
+                </div>
+                
+                <h2 class="h4 mb-3">
+                  <%= link_to post.title, blog_post_path(post), class: "text-decoration-none text-dark" %>
+                </h2>
+                
+                <p class="text-muted mb-3">
+                  <%= truncate(strip_tags(post.content.to_plain_text), length: 200) %>
+                </p>
+                
+                <div class="d-flex justify-content-between align-items-center">
+                  <div>
+                    <% post.tags.each do |tag| %>
+                      <%= link_to blog_posts_path(tag_id: tag.id),
+                          class: "badge bg-light text-dark text-decoration-none me-1" do %>
+                        #<%= tag.name %>
+                      <% end %>
+                    <% end %>
+                  </div>
+                  
+                  <div class="text-muted small">
+                    <i class="bi bi-chat"></i>
+                    <%= pluralize(post.comments.count, 'comment') %>
+                  </div>
+                </div>
+              </div>
+            </div>
+          <% end %>
+          
+          <div class="mt-4">
+            <%= paginate @posts %>
+          </div>
+        </div>
+      <% else %>
+        <div class="card">
+          <div class="card-body text-center py-5">
+            <h3 class="text-muted mb-4">Your feed is empty</h3>
+            <p class="text-muted mb-4">
+              Follow other users to see their posts in your feed
+            </p>
+            <%= link_to blog_posts_path, class: "btn btn-primary" do %>
+              <i class="bi bi-search"></i> Discover Posts
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+    
+    <div class="col-lg-4">
+      <div class="card mb-4">
+        <div class="card-header">
+          <h5 class="card-title mb-0">Who to Follow</h5>
+        </div>
+        <div class="list-group list-group-flush">
+          <% User.where.not(id: [current_user.id, *current_user.following_ids])
+                .joins(:blog_posts)
+                .where(blog_posts: { published: true })
+                .group('users.id')
+                .order('COUNT(blog_posts.id) DESC')
+                .limit(5)
+                .each do |user| %>
+            <div class="list-group-item">
+              <div class="d-flex justify-content-between align-items-center">
+                <div>
+                  <%= link_to profile_path(user), class: "text-decoration-none" do %>
+                    <h6 class="mb-0 text-dark"><%= user.display_name %></h6>
+                  <% end %>
+                  <small class="text-muted">
+                    <%= pluralize(user.blog_posts.published.count, 'post') %>
+                  </small>
+                </div>
+                
+                <%= button_to profile_follow_path(user),
+                    method: :post,
+                    class: "btn btn-sm btn-outline-primary" do %>
+                  <i class="bi bi-person-plus"></i> Follow
+                <% end %>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      </div>
+      
+      <div class="card">
+        <div class="card-header">
+          <h5 class="card-title mb-0">Popular Tags</h5>
+        </div>
+        <div class="card-body">
+          <% Tag.joins(:blog_posts)
+                .where(blog_posts: { published: true })
+                .group('tags.id')
+                .order('COUNT(blog_posts.id) DESC')
+                .limit(10)
+                .each do |tag| %>
+            <%= link_to blog_posts_path(tag_id: tag.id),
+                class: "badge bg-light text-dark text-decoration-none me-1 mb-1" do %>
+              #<%= tag.name %>
+              <span class="text-muted">
+                <%= tag.blog_posts.published.count %>
+              </span>
+            <% end %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,18 @@
+New <%= @comment.parent_id.nil? ? 'Comment' : 'Reply' %>
+
+Hello <%= @comment.parent_id.nil? ? @post_author.email : @parent_comment.user.email %>,
+
+<% if @comment.parent_id.nil? %>
+You have received a new comment on your blog post "<%= @blog_post.title %>".
+<% else %>
+Someone has replied to your comment on the blog post "<%= @blog_post.title %>".
+<% end %>
+
+From: <%= @comment.user.email %>
+Comment:
+<%= @comment.content %>
+
+View the comment here: <%= blog_post_url(@blog_post, anchor: "comment-#{@comment.id}") %>
+
+---
+You received this email because you are <%= @comment.parent_id.nil? ? 'the author of this blog post' : 'subscribed to comment notifications' %>.

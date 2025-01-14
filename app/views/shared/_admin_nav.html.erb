@@ -1,0 +1,66 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+  <div class="container-fluid">
+    <%= link_to "Admin Dashboard", admin_root_path, class: "navbar-brand" %>
+    
+    <button class="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#adminNavbar">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    
+    <div class="collapse navbar-collapse" id="adminNavbar">
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <%= link_to admin_root_path,
+              class: "nav-link #{current_page?(admin_root_path) ? 'active' : ''}" do %>
+            <i class="bi bi-speedometer2"></i> Dashboard
+          <% end %>
+        </li>
+        
+        <li class="nav-item">
+          <%= link_to admin_users_path,
+              class: "nav-link #{controller_name == 'users' ? 'active' : ''}" do %>
+            <i class="bi bi-people"></i> Users
+          <% end %>
+        </li>
+        
+        <li class="nav-item">
+          <%= link_to admin_blog_posts_path,
+              class: "nav-link #{controller_name == 'blog_posts' ? 'active' : ''}" do %>
+            <i class="bi bi-file-text"></i> Blog Posts
+          <% end %>
+        </li>
+        
+        <li class="nav-item">
+          <%= link_to admin_tags_path,
+              class: "nav-link #{controller_name == 'tags' ? 'active' : ''}" do %>
+            <i class="bi bi-tags"></i> Tags
+          <% end %>
+        </li>
+        
+        <li class="nav-item">
+          <%= link_to admin_achievements_path,
+              class: "nav-link #{controller_name == 'achievements' ? 'active' : ''}" do %>
+            <i class="bi bi-trophy"></i> Achievements
+          <% end %>
+        </li>
+        
+        <li class="nav-item">
+          <%= link_to admin_comments_path,
+              class: "nav-link #{controller_name == 'comments' ? 'active' : ''}" do %>
+            <i class="bi bi-chat-dots"></i> Comments
+          <% end %>
+        </li>
+      </ul>
+      
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item">
+          <%= link_to root_path, class: "nav-link" do %>
+            <i class="bi bi-arrow-left"></i> Back to Site
+          <% end %>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>

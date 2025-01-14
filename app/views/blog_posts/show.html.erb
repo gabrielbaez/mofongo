@@ -1,0 +1,219 @@
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <article class="blog-post">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item"><%= link_to "Blog", blog_posts_path %></li>
+            <% if @blog_post.blog_series %>
+              <li class="breadcrumb-item">
+                <%= link_to "Series", blog_series_index_path %>
+              </li>
+              <li class="breadcrumb-item">
+                <%= link_to @blog_post.blog_series.title, blog_series_path(@blog_post.blog_series) %>
+              </li>
+            <% end %>
+            <li class="breadcrumb-item active" aria-current="page"><%= @blog_post.title %></li>
+          </ol>
+        </nav>
+
+        <h1 class="blog-post-title display-4 mb-4">
+          <%= @blog_post.title %>
+        </h1>
+        
+        <div class="mb-4">
+          <div class="d-flex justify-content-between align-items-start">
+            <div class="d-flex align-items-center">
+              <%= link_to @blog_post.user.display_name,
+                  profile_path(@blog_post.user),
+                  class: "text-decoration-none fw-bold" %>
+              
+              <%= render "shared/achievement_badges", user: @blog_post.user %>
+              
+              <span class="text-muted mx-2">•</span>
+              
+              <time datetime="<%= @blog_post.published_at.iso8601 %>" class="text-muted">
+                <%= @blog_post.published_at.strftime("%B %-d, %Y") %>
+              </time>
+            </div>
+            
+            <%= render "shared/share_buttons",
+                url: blog_post_url(@blog_post),
+                title: @blog_post.title,
+                description: @blog_post.summary %>
+          </div>
+          
+          <div class="d-flex align-items-center text-muted small mt-2">
+            <div class="me-3">
+              <i class="bi bi-eye"></i>
+              <%= pluralize(@blog_post.views_count, "view") %>
+            </div>
+            
+            <div class="me-3">
+              <i class="bi bi-chat"></i>
+              <%= pluralize(@blog_post.comments_count, "comment") %>
+            </div>
+            
+            <div>
+              <i class="bi bi-heart"></i>
+              <%= pluralize(@blog_post.likes_count, "like") %>
+            </div>
+          </div>
+        </div>
+        
+        <% if @blog_post.summary.present? %>
+          <div class="lead mb-4">
+            <%= @blog_post.summary %>
+          </div>
+        <% end %>
+        
+        <%= render "content", post: @blog_post %>
+        
+        <% if @blog_post.related_posts.any? %>
+          <section class="related-posts mt-5">
+            <h2 class="h4 mb-4">Related Posts</h2>
+            
+            <div class="row g-4">
+              <% @blog_post.related_posts.each do |post| %>
+                <div class="col-md-4">
+                  <div class="card h-100">
+                    <% if post.featured_image.attached? %>
+                      <%= image_tag post.featured_image.variant(resize_to_fill: [400, 200]),
+                          class: "card-img-top",
+                          alt: post.title %>
+                    <% end %>
+                    
+                    <div class="card-body">
+                      <h3 class="card-title h5">
+                        <%= link_to post.title,
+                            blog_post_path(post),
+                            class: "text-decoration-none stretched-link" %>
+                      </h3>
+                      
+                      <p class="card-text small text-muted">
+                        <%= truncate(post.summary, length: 100) %>
+                      </p>
+                    </div>
+                    
+                    <div class="card-footer bg-transparent">
+                      <div class="d-flex align-items-center text-muted small">
+                        <div class="me-3">
+                          <i class="bi bi-calendar"></i>
+                          <%= post.published_at.strftime("%b %-d, %Y") %>
+                        </div>
+                        
+                        <div>
+                          <i class="bi bi-clock"></i>
+                          <%= pluralize(post.estimated_reading_time, "min") %>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              <% end %>
+            </div>
+          </section>
+        <% end %>
+        
+        <section class="comments mt-5" id="comments">
+          <h2 class="h4 mb-4">
+            Comments
+            <small class="text-muted">
+              (<%= @blog_post.approved_comments_count %>)
+            </small>
+          </h2>
+          
+          <%= render "comments/form",
+              commentable: @blog_post,
+              comment: @comment if user_signed_in? %>
+          
+          <div class="comments-list mt-4">
+            <%= render partial: "comments/comment",
+                collection: @blog_post.approved_comments(@comment_sort),
+                locals: { commentable: @blog_post } %>
+          </div>
+        </section>
+      </article>
+    </div>
+    
+    <div class="col-lg-4">
+      <div class="position-sticky" style="top: 2rem;">
+        <div class="card mb-4">
+          <div class="card-body">
+            <h5 class="card-title">About the Author</h5>
+            
+            <div class="d-flex align-items-center mb-3">
+              <%= link_to profile_path(@blog_post.user), class: "text-decoration-none me-3" do %>
+                <% if @blog_post.user.avatar.attached? %>
+                  <%= image_tag @blog_post.user.avatar.variant(resize_to_fill: [64, 64]),
+                      class: "rounded-circle",
+                      alt: @blog_post.user.display_name %>
+                <% else %>
+                  <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center"
+                       style="width: 64px; height: 64px; font-size: 24px;">
+                    <%= @blog_post.user.display_name.first.upcase %>
+                  </div>
+                <% end %>
+              <% end %>
+              
+              <div>
+                <h6 class="mb-1">
+                  <%= link_to @blog_post.user.display_name,
+                      profile_path(@blog_post.user),
+                      class: "text-decoration-none" %>
+                </h6>
+                
+                <%= render "shared/achievement_badges",
+                    user: @blog_post.user,
+                    size: "sm" %>
+              </div>
+            </div>
+            
+            <% if @blog_post.user.bio.present? %>
+              <p class="card-text">
+                <%= truncate(@blog_post.user.bio, length: 150) %>
+              </p>
+            <% end %>
+            
+            <%= link_to "View Profile",
+                profile_path(@blog_post.user),
+                class: "btn btn-outline-primary btn-sm" %>
+          </div>
+        </div>
+        
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">Share this Post</h5>
+            
+            <%= render "shared/share_buttons",
+                url: blog_post_url(@blog_post),
+                title: @blog_post.title,
+                description: @blog_post.summary %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%= stylesheet_link_tag "trix/dist/trix" %>
+
+<style>
+  .trix-content img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 1rem auto;
+  }
+  
+  .trix-content figure {
+    margin: 2rem 0;
+  }
+  
+  .trix-content figcaption {
+    text-align: center;
+    font-size: 0.9em;
+    color: #666;
+    margin-top: 0.5rem;
+  }
+</style>

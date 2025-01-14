@@ -1,0 +1,19 @@
+<div class="subscription-form">
+  <%= form_with(model: Subscription.new, local: true, class: "row g-2") do |f| %>
+    <div class="col-auto flex-grow-1">
+      <%= f.email_field :email,
+          value: user_signed_in? ? current_user.email : nil,
+          placeholder: "Enter your email",
+          class: "form-control",
+          required: true %>
+    </div>
+
+    <div class="col-auto">
+      <%= f.submit "Subscribe", class: "btn btn-primary" %>
+    </div>
+
+    <div class="mt-2">
+      <%= recaptcha_tags %>
+    </div>
+  <% end %>
+</div>

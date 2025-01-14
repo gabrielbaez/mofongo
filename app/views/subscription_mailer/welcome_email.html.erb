@@ -1,0 +1,76 @@
+<div style="max-width: 600px; margin: 0 auto; font-family: system-ui, -apple-system, sans-serif;">
+  <div style="text-align: center; padding: 2rem 0;">
+    <%= image_tag "logo.png", alt: "Mofongo Blog", style: "max-width: 200px;" %>
+  </div>
+  
+  <div style="background-color: #ffffff; padding: 2rem; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+    <h1 style="color: #1a1a1a; margin-bottom: 1.5rem;">Welcome to Mofongo Blog!</h1>
+    
+    <p style="color: #4a5568; line-height: 1.6; margin-bottom: 1.5rem;">
+      Hi <%= @subscription.display_name %>,
+    </p>
+    
+    <p style="color: #4a5568; line-height: 1.6; margin-bottom: 1.5rem;">
+      Thank you for subscribing to Mofongo Blog! We're excited to have you join our community
+      of developers and tech enthusiasts.
+    </p>
+    
+    <h2 style="color: #2d3748; margin: 2rem 0 1rem;">What to Expect</h2>
+    
+    <ul style="color: #4a5568; line-height: 1.6; margin-bottom: 1.5rem; padding-left: 1.5rem;">
+      <% @subscription.preferences.each do |pref| %>
+        <li style="margin-bottom: 0.5rem;">
+          <strong><%= Subscription::PREFERENCES[pref] %>:</strong>
+          <%= case pref
+              when 'weekly_digest'
+                "A weekly roundup of our best content and community highlights."
+              when 'new_posts'
+                "Instant notifications when we publish new articles."
+              when 'series_updates'
+                "Updates when new posts are added to series you're following."
+              when 'community_highlights'
+                "Weekly highlights of top comments and active community members."
+              end %>
+        </li>
+      <% end %>
+    </ul>
+    
+    <div style="background-color: #f7fafc; border-radius: 6px; padding: 1.5rem; margin: 2rem 0;">
+      <h3 style="color: #2d3748; margin: 0 0 1rem;">Manage Your Preferences</h3>
+      <p style="color: #4a5568; line-height: 1.6; margin-bottom: 1rem;">
+        You can customize your email preferences or unsubscribe at any time by visiting:
+      </p>
+      <%= link_to "Manage Subscription",
+          subscription_preferences_url(token: @subscription.token),
+          style: "display: inline-block; background-color: #4299e1; color: white; text-decoration: none; padding: 0.75rem 1.5rem; border-radius: 4px;" %>
+    </div>
+    
+    <div style="margin-top: 2rem;">
+      <h3 style="color: #2d3748; margin-bottom: 1rem;">Popular Posts</h3>
+      
+      <% BlogPost.published.order(published_at: :desc).limit(3).each do |post| %>
+        <div style="margin-bottom: 1rem;">
+          <%= link_to post.title,
+              blog_post_url(post),
+              style: "color: #2b6cb0; text-decoration: none; font-weight: 600;" %>
+          <p style="color: #718096; font-size: 0.875rem; margin: 0.25rem 0 0;">
+            <%= truncate(post.summary, length: 120) %>
+          </p>
+        </div>
+      <% end %>
+    </div>
+  </div>
+  
+  <div style="text-align: center; padding: 2rem; color: #718096; font-size: 0.875rem;">
+    <p style="margin-bottom: 1rem;">
+      You're receiving this email because you subscribed to Mofongo Blog.
+    </p>
+    <p style="margin: 0;">
+      <%= link_to "Unsubscribe",
+          unsubscribe_subscription_url(token: @subscription.token),
+          style: "color: #718096;" %>
+      •
+      <%= link_to "Privacy Policy", privacy_policy_url, style: "color: #718096;" %>
+    </p>
+  </div>
+</div>

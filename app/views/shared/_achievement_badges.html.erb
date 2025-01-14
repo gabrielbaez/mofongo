@@ -1,0 +1,20 @@
+<% if user.achievements.any? %>
+  <div class="achievement-badges">
+    <% user.achievements.order(points: :desc).limit(3).each do |achievement| %>
+      <span class="badge rounded-pill bg-light text-dark border"
+            data-bs-toggle="tooltip"
+            title="<%= achievement.name %>: <%= achievement.description %>">
+        <%= achievement.badge_icon %>
+      </span>
+    <% end %>
+    
+    <% if user.achievements.count > 3 %>
+      <%= link_to profile_path(user),
+          class: "badge rounded-pill bg-light text-dark border text-decoration-none",
+          data: { bs_toggle: "tooltip" },
+          title: "View all achievements" do %>
+        +<%= user.achievements.count - 3 %> more
+      <% end %>
+    <% end %>
+  </div>
+<% end %>

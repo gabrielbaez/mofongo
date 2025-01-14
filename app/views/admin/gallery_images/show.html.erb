@@ -1,0 +1,163 @@
+<div class="mb-4">
+  <div class="d-flex justify-content-between align-items-start">
+    <div>
+      <h1 class="mb-1"><%= @gallery_image.title %></h1>
+      <p class="text-muted mb-0">
+        Uploaded by <%= link_to @gallery_image.user.display_name,
+                        admin_user_path(@gallery_image.user),
+                        class: "text-decoration-none" %>
+        on <%= @gallery_image.created_at.strftime("%B %-d, %Y") %>
+      </p>
+    </div>
+    
+    <div class="btn-group">
+      <%= link_to edit_admin_gallery_image_path(@gallery_image),
+          class: "btn btn-outline-primary" do %>
+        <i class="fas fa-pencil-alt"></i> Edit
+      <% end %>
+      
+      <%= button_to admin_gallery_image_path(@gallery_image),
+          method: :delete,
+          class: "btn btn-outline-danger",
+          form: {
+            data: {
+              turbo_confirm: "Are you sure? This will remove the image from all posts using it."
+            }
+          } do %>
+        <i class="fas fa-trash"></i> Delete
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-8">
+    <div class="card mb-4">
+      <div class="card-body p-0">
+        <%= image_tag @gallery_image.medium_url,
+            class: "img-fluid w-100",
+            alt: @gallery_image.alt_text %>
+      </div>
+    </div>
+    
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title h5 mb-0">Image Details</h3>
+      </div>
+      
+      <div class="card-body">
+        <dl class="row mb-0">
+          <dt class="col-sm-3">Title</dt>
+          <dd class="col-sm-9"><%= @gallery_image.title %></dd>
+          
+          <% if @gallery_image.description.present? %>
+            <dt class="col-sm-3">Description</dt>
+            <dd class="col-sm-9"><%= @gallery_image.description %></dd>
+          <% end %>
+          
+          <dt class="col-sm-3">Alt Text</dt>
+          <dd class="col-sm-9"><%= @gallery_image.alt_text %></dd>
+          
+          <dt class="col-sm-3">File Size</dt>
+          <dd class="col-sm-9"><%= number_to_human_size(@gallery_image.file_size) %></dd>
+          
+          <dt class="col-sm-3">Dimensions</dt>
+          <dd class="col-sm-9"><%= @gallery_image.width %>x<%= @gallery_image.height %></dd>
+          
+          <dt class="col-sm-3">Type</dt>
+          <dd class="col-sm-9"><%= @gallery_image.content_type %></dd>
+        </dl>
+      </div>
+    </div>
+  </div>
+  
+  <div class="col-md-4">
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title h5 mb-0">Image URLs</h3>
+      </div>
+      
+      <div class="card-body">
+        <div class="mb-3">
+          <label class="form-label">Original URL</label>
+          <div class="input-group">
+            <input type="text"
+                   class="form-control"
+                   value="<%= @gallery_image.original_url %>"
+                   readonly>
+            <button class="btn btn-outline-primary"
+                    data-controller="clipboard"
+                    data-action="clipboard#copy"
+                    data-clipboard-text-value="<%= @gallery_image.original_url %>">
+              <i class="fas fa-copy"></i>
+            </button>
+          </div>
+        </div>
+        
+        <div class="mb-3">
+          <label class="form-label">Medium URL</label>
+          <div class="input-group">
+            <input type="text"
+                   class="form-control"
+                   value="<%= @gallery_image.medium_url %>"
+                   readonly>
+            <button class="btn btn-outline-primary"
+                    data-controller="clipboard"
+                    data-action="clipboard#copy"
+                    data-clipboard-text-value="<%= @gallery_image.medium_url %>">
+              <i class="fas fa-copy"></i>
+            </button>
+          </div>
+        </div>
+        
+        <div>
+          <label class="form-label">Thumbnail URL</label>
+          <div class="input-group">
+            <input type="text"
+                   class="form-control"
+                   value="<%= @gallery_image.thumbnail_url %>"
+                   readonly>
+            <button class="btn btn-outline-primary"
+                    data-controller="clipboard"
+                    data-action="clipboard#copy"
+                    data-clipboard-text-value="<%= @gallery_image.thumbnail_url %>">
+              <i class="fas fa-copy"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="card mt-4">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <h3 class="card-title h5 mb-0">Usage in Posts</h3>
+        <span class="badge bg-primary"><%= @usage.count %></span>
+      </div>
+      
+      <div class="list-group list-group-flush">
+        <% @usage.each do |post| %>
+          <%= link_to blog_post_path(post),
+              class: "list-group-item list-group-item-action" do %>
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <h6 class="mb-1"><%= post.title %></h6>
+                <small class="text-muted">
+                  by <%= post.user.display_name %>
+                </small>
+              </div>
+              <small class="text-muted">
+                <%= post.created_at.strftime("%b %-d, %Y") %>
+              </small>
+            </div>
+          <% end %>
+        <% end %>
+        
+        <% if @usage.empty? %>
+          <div class="list-group-item text-center text-muted py-3">
+            <p class="mb-0">This image is not used in any posts.</p>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

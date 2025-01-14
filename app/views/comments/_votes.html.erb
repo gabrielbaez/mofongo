@@ -1,0 +1,29 @@
+<div id="comment-<%= comment.id %>-votes" class="d-flex align-items-center gap-2">
+  <% if user_signed_in? && comment.user != current_user %>
+    <div class="btn-group btn-group-sm" role="group">
+      <%= button_to comment_vote_path(comment, value: 1),
+          method: comment.upvoted_by?(current_user) ? :delete : :post,
+          class: "btn #{comment.upvoted_by?(current_user) ? 'btn-primary' : 'btn-outline-primary'}",
+          form: { data: { turbo: true } } do %>
+        <i class="bi bi-arrow-up-short"></i>
+      <% end %>
+
+      <%= button_to comment_vote_path(comment, value: -1),
+          method: comment.downvoted_by?(current_user) ? :delete : :post,
+          class: "btn #{comment.downvoted_by?(current_user) ? 'btn-danger' : 'btn-outline-danger'}",
+          form: { data: { turbo: true } } do %>
+        <i class="bi bi-arrow-down-short"></i>
+      <% end %>
+    </div>
+  <% end %>
+
+  <div class="score">
+    <% if comment.score > 0 %>
+      <span class="text-success">+<%= comment.score %></span>
+    <% elsif comment.score < 0 %>
+      <span class="text-danger"><%= comment.score %></span>
+    <% else %>
+      <span class="text-muted">0</span>
+    <% end %>
+  </div>
+</div>

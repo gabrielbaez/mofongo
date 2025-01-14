@@ -1,0 +1,27 @@
+<%= form_with(model: [:admin, blog_category], local: true, class: "needs-validation") do |f| %>
+  <% if blog_category.errors.any? %>
+    <div class="alert alert-danger">
+      <h4><%= pluralize(blog_category.errors.count, "error") %> prohibited this category from being saved:</h4>
+      <ul>
+        <% blog_category.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="mb-3">
+    <%= f.label :name, class: "form-label" %>
+    <%= f.text_field :name, class: "form-control", required: true %>
+  </div>
+
+  <div class="mb-3">
+    <%= f.label :description, class: "form-label" %>
+    <%= f.text_area :description, class: "form-control", rows: 4 %>
+  </div>
+
+  <div class="mt-4">
+    <%= f.submit class: "btn btn-primary" %>
+    <%= link_to "Cancel", admin_blog_categories_path, class: "btn btn-outline-secondary ms-2" %>
+  </div>
+<% end %>

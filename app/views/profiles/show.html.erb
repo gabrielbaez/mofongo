@@ -1,35 +1,270 @@
-<div class="container mt-5">
-  <div class="row justify-content-center">
-    <div class="col-md-8">
-      <div class="card">
+<div class="container py-5">
+  <div class="row">
+    <div class="col-lg-3">
+      <div class="card mb-4">
+        <div class="card-body text-center">
+          <h1 class="h3 mb-3"><%= @user.display_name %></h1>
+          <p class="text-muted mb-4">Member since <%= @user.created_at.strftime("%B %Y") %></p>
+          
+          <div class="mb-3">
+            <div class="d-flex justify-content-center gap-3">
+              <%= link_to "#followers-modal",
+                  class: "text-decoration-none",
+                  data: { bs_toggle: "modal" } do %>
+                <div class="text-center">
+                  <div class="h4 mb-0"><%= @user.followers.count %></div>
+                  <small class="text-muted">Followers</small>
+                </div>
+              <% end %>
+              
+              <%= link_to "#following-modal",
+                  class: "text-decoration-none",
+                  data: { bs_toggle: "modal" } do %>
+                <div class="text-center">
+                  <div class="h4 mb-0"><%= @user.following.count %></div>
+                  <small class="text-muted">Following</small>
+                </div>
+              <% end %>
+            </div>
+          </div>
+          
+          <% if @user != current_user %>
+            <div id="follow_button">
+              <% if user_signed_in? %>
+                <% if current_user.following?(@user) %>
+                  <%= button_to profile_follow_path(@user),
+                      method: :delete,
+                      class: "btn btn-outline-primary" do %>
+                    <i class="bi bi-person-dash"></i> Unfollow
+                  <% end %>
+                <% else %>
+                  <%= button_to profile_follow_path(@user),
+                      method: :post,
+                      class: "btn btn-primary" do %>
+                    <i class="bi bi-person-plus"></i> Follow
+                  <% end %>
+                <% end %>
+              <% end %>
+            </div>
+          <% else %>
+            <%= link_to "Edit Profile", edit_user_registration_path, class: "btn btn-primary" %>
+          <% end %>
+        </div>
+      </div>
+
+      <div class="card mb-4">
         <div class="card-header">
-          <h2 class="text-center">My Profile</h2>
+          <h5 class="card-title mb-0">Comment Stats</h5>
         </div>
         <div class="card-body">
-          <div class="row mb-3">
-            <div class="col-sm-4"><strong>Username:</strong></div>
-            <div class="col-sm-8"><%= @user.username %></div>
+          <div class="d-flex justify-content-between mb-2">
+            <span>Total Comments:</span>
+            <span class="fw-bold"><%= @comment_stats[:total_comments] %></span>
           </div>
+          <div class="d-flex justify-content-between mb-2">
+            <span>Total Score:</span>
+            <span class="fw-bold"><%= @comment_stats[:total_score] %></span>
+          </div>
+          <div class="d-flex justify-content-between">
+            <span>Average Score:</span>
+            <span class="fw-bold"><%= @comment_stats[:avg_score] %></span>
+          </div>
+        </div>
+      </div>
 
-          <div class="row mb-3">
-            <div class="col-sm-4"><strong>Name:</strong></div>
-            <div class="col-sm-8"><%= @user.name %></div>
+      <div class="card mb-4">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <h5 class="card-title mb-0">Achievements</h5>
+          <div>
+            <span class="badge bg-primary">
+              <%= @user.total_points %> points
+            </span>
+            <% if user_signed_in? %>
+              <%= link_to leaderboard_path, class: "btn btn-sm btn-outline-primary ms-2" do %>
+                <i class="bi bi-trophy"></i> Leaderboard
+              <% end %>
+            <% end %>
           </div>
+        </div>
+        <div class="list-group list-group-flush">
+          <% @user.user_achievements.order(created_at: :desc).each do |user_achievement| %>
+            <div class="list-group-item">
+              <div class="d-flex align-items-center">
+                <div class="achievement-icon me-3">
+                  <%= user_achievement.achievement.badge_icon %>
+                </div>
+                <div class="flex-grow-1">
+                  <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                      <h6 class="mb-0"><%= user_achievement.achievement.name %></h6>
+                      <small class="text-muted">
+                        <%= user_achievement.achievement.description %> •
+                        <span class="text-success">+<%= user_achievement.achievement.points %> points</span>
+                      </small>
+                    </div>
+                    
+                    <% if @user == current_user %>
+                      <%= link_to "#",
+                          class: "btn btn-sm btn-outline-primary",
+                          data: { bs_toggle: "modal", bs_target: "#share-achievement-#{user_achievement.id}" } do %>
+                        <i class="bi bi-share"></i> Share
+                      <% end %>
+                      
+                      <%= render "achievement_shares/share_modal", user_achievement: user_achievement %>
+                    <% end %>
+                  </div>
+                  
+                  <% if @user == current_user %>
+                    <% progress = user_achievement.achievement.progress_for(@user) %>
+                    <div class="progress mt-2" style="height: 5px;">
+                      <div class="progress-bar" role="progressbar"
+                           style="width: <%= progress.percentage %>%"
+                           aria-valuenow="<%= progress.percentage %>"
+                           aria-valuemin="0"
+                           aria-valuemax="100"></div>
+                    </div>
+                    <small class="text-muted">
+                      <%= progress.current_value %>/<%= progress.target_value %>
+                      (<%= progress.remaining %> to go)
+                    </small>
+                  <% end %>
+                </div>
+              </div>
+            </div>
+          <% end %>
+          
+          <% if @user.user_achievements.empty? %>
+            <div class="list-group-item text-center text-muted py-4">
+              No achievements yet
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
 
-          <div class="row mb-3">
-            <div class="col-sm-4"><strong>Email:</strong></div>
-            <div class="col-sm-8"><%= @user.email %></div>
+    <div class="col-lg-9">
+      <% if @recent_posts.any? %>
+        <div class="card mb-4">
+          <div class="card-header">
+            <h5 class="card-title mb-0">Recent Blog Posts</h5>
           </div>
+          <div class="list-group list-group-flush">
+            <% @recent_posts.each do |post| %>
+              <%= link_to blog_post_path(post), class: "list-group-item list-group-item-action" do %>
+                <div class="d-flex w-100 justify-content-between">
+                  <h6 class="mb-1"><%= post.title %></h6>
+                  <small class="text-muted"><%= time_ago_in_words(post.published_at) %> ago</small>
+                </div>
+                <p class="mb-1 text-muted"><%= truncate(strip_tags(post.content.to_plain_text), length: 100) %></p>
+              <% end %>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
 
-          <div class="row mb-3">
-            <div class="col-sm-4"><strong>Role:</strong></div>
-            <div class="col-sm-8"><%= @user.role_id.titleize %></div>
-          </div>
+      <div class="card">
+        <div class="card-header">
+          <h5 class="card-title mb-0">Recent Comments</h5>
+        </div>
+        <div class="list-group list-group-flush">
+          <% if @recent_comments.any? %>
+            <% @recent_comments.each do |comment| %>
+              <%= link_to blog_post_path(comment.blog_post, anchor: "comment_#{comment.id}"),
+                  class: "list-group-item list-group-item-action" do %>
+                <div class="d-flex w-100 justify-content-between">
+                  <h6 class="mb-1">On: <%= comment.blog_post.title %></h6>
+                  <small class="text-muted"><%= time_ago_in_words(comment.created_at) %> ago</small>
+                </div>
+                <p class="mb-1"><%= truncate(strip_tags(comment.content.to_plain_text), length: 100) %></p>
+                <small class="text-muted">
+                  Score: <%= comment.score %>
+                  <% if comment.replies.any? %>
+                    • <%= pluralize(comment.replies.count, 'reply') %>
+                  <% end %>
+                </small>
+              <% end %>
+            <% end %>
+          <% else %>
+            <div class="list-group-item text-center text-muted py-4">
+              No comments yet
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
-          <div class="text-center mt-4">
-            <%= link_to 'Edit Profile', edit_user_registration_path, class: 'btn btn-primary' %>
-            <%= link_to 'Back', :back, class: 'btn btn-secondary ms-2' %>
-          </div>
+<!-- Followers Modal -->
+<div class="modal fade" id="followers-modal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Followers</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div class="list-group list-group-flush">
+          <% @user.followers.each do |follower| %>
+            <%= link_to profile_path(follower), class: "list-group-item list-group-item-action" do %>
+              <div class="d-flex justify-content-between align-items-center">
+                <div>
+                  <h6 class="mb-0"><%= follower.display_name %></h6>
+                  <small class="text-muted">
+                    <%= pluralize(follower.blog_posts.published.count, 'post') %> •
+                    <%= pluralize(follower.comments.count, 'comment') %>
+                  </small>
+                </div>
+                <% if user_signed_in? && current_user != follower %>
+                  <% if current_user.following?(follower) %>
+                    <span class="badge bg-primary">Following</span>
+                  <% end %>
+                <% end %>
+              </div>
+            <% end %>
+          <% end %>
+          
+          <% if @user.followers.empty? %>
+            <div class="text-center text-muted py-4">
+              No followers yet
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Following Modal -->
+<div class="modal fade" id="following-modal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Following</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div class="list-group list-group-flush">
+          <% @user.following.each do |followed| %>
+            <%= link_to profile_path(followed), class: "list-group-item list-group-item-action" do %>
+              <div class="d-flex justify-content-between align-items-center">
+                <div>
+                  <h6 class="mb-0"><%= followed.display_name %></h6>
+                  <small class="text-muted">
+                    <%= pluralize(followed.blog_posts.published.count, 'post') %> •
+                    <%= pluralize(followed.comments.count, 'comment') %>
+                  </small>
+                </div>
+                <span class="badge bg-primary">Following</span>
+              </div>
+            <% end %>
+          <% end %>
+          
+          <% if @user.following.empty? %>
+            <div class="text-center text-muted py-4">
+              Not following anyone yet
+            </div>
+          <% end %>
         </div>
       </div>
     </div>

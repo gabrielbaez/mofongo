@@ -1,0 +1,34 @@
+<%# Basic Meta Tags %>
+<title><%= meta_title %></title>
+<meta name="description" content="<%= meta_description %>">
+
+<%# Open Graph Tags %>
+<meta property="og:title" content="<%= meta_title %>">
+<meta property="og:description" content="<%= meta_description %>">
+<meta property="og:type" content="<%= meta_type %>">
+<meta property="og:url" content="<%= request.original_url %>">
+<% if meta_image.present? %>
+  <meta property="og:image" content="<%= meta_image %>">
+<% end %>
+
+<%# Twitter Card Tags %>
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="<%= meta_title %>">
+<meta name="twitter:description" content="<%= meta_description %>">
+<% if meta_image.present? %>
+  <meta name="twitter:image" content="<%= meta_image %>">
+<% end %>
+
+<%# Article-specific Meta Tags %>
+<% if meta_type == 'article' %>
+  <meta property="article:published_time" content="<%= meta_published_time&.iso8601 %>">
+  <meta property="article:author" content="<%= meta_author %>">
+  <% meta_tags&.each do |tag| %>
+    <meta property="article:tag" content="<%= tag %>">
+  <% end %>
+<% end %>
+
+<%# Canonical URL %>
+<% if meta_canonical.present? %>
+  <link rel="canonical" href="<%= meta_canonical %>" />
+<% end %>

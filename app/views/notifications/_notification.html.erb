@@ -1,0 +1,44 @@
+<div id="<%= dom_id(notification) %>" class="list-group-item <%= 'bg-light' unless notification.read_at %>">
+  <div class="d-flex w-100 justify-content-between align-items-center">
+    <div class="d-flex align-items-center">
+      <div class="me-3">
+        <% case notification.action %>
+        <% when 'started_following' %>
+          <i class="bi bi-person-plus fs-4"></i>
+        <% when 'achievement_unlocked' %>
+          <i class="bi bi-trophy fs-4"></i>
+        <% end %>
+      </div>
+      
+      <div>
+        <% case notification.action %>
+        <% when 'started_following' %>
+          <%= link_to notification.actor.display_name, profile_path(notification.actor), class: "fw-bold" %>
+          started following you
+        <% when 'achievement_unlocked' %>
+          You unlocked the
+          <span class="fw-bold">
+            <%= notification.notifiable.name %>
+          </span>
+          achievement!
+          <div class="text-muted small">
+            <%= notification.notifiable.description %> •
+            <span class="text-success">+<%= notification.notifiable.points %> points</span>
+          </div>
+        <% end %>
+        
+        <div class="text-muted small">
+          <%= time_ago_in_words(notification.created_at) %> ago
+        </div>
+      </div>
+    </div>
+    
+    <% unless notification.read_at %>
+      <%= button_to mark_as_read_notification_path(notification),
+          class: "btn btn-sm btn-outline-secondary",
+          method: :patch do %>
+        <i class="bi bi-check2"></i>
+      <% end %>
+    <% end %>
+  </div>
+</div>

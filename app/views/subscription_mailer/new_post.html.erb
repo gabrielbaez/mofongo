@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        line-height: 1.6;
+        color: #333;
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+      .post-preview {
+        background: #f9f9f9;
+        border-left: 4px solid #007bff;
+        padding: 15px;
+        margin: 20px 0;
+      }
+      .button {
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: white;
+        text-decoration: none;
+        border-radius: 4px;
+        margin-top: 20px;
+      }
+      .meta {
+        color: #666;
+        font-size: 0.9em;
+        margin: 10px 0;
+      }
+      .footer {
+        margin-top: 30px;
+        padding-top: 20px;
+        border-top: 1px solid #eee;
+        font-size: 0.9em;
+        color: #666;
+      }
+    </style>
+  </head>
+  <body>
+    <h1><%= @blog_post.title %></h1>
+    
+    <div class="meta">
+      <p>
+        Published on <%= @blog_post.published_at.strftime("%B %d, %Y") %>
+        in <%= @blog_post.blog_category.name %>
+      </p>
+    </div>
+    
+    <div class="post-preview">
+      <%= truncate(strip_tags(@blog_post.content.to_s), length: 300) %>
+    </div>
+    
+    <%= link_to "Read Full Post", blog_post_url(@blog_post), class: "button" %>
+    
+    <div class="footer">
+      <p>
+        You received this email because you are subscribed to our blog updates.
+        <%= link_to "Unsubscribe", unsubscribe_subscription_url(token: @subscription.token) %>
+        if you no longer wish to receive these emails.
+      </p>
+    </div>
+  </body>
+</html>

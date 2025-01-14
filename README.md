@@ -1,6 +1,18 @@
 # Mofongo
 
-A modern web application with a robust admin interface built with Ruby on Rails.
+⚠️ **IMPORTANT DISCLAIMER** ⚠️
+
+This application is **NOT** intended for production use. It is a playground project created to explore and demonstrate what Generative AI can do when tasked with creating code. The codebase was primarily generated using AI tools and serves as an experimental showcase of AI capabilities in software development.
+
+## Purpose
+
+This project exists to:
+- Demonstrate AI's ability to generate functional code
+- Explore the boundaries of AI-assisted development
+- Serve as a learning resource for understanding AI's current capabilities and limitations in software development
+- Provide examples of AI-generated tests, documentation, and architectural decisions
+
+While the code may be functional, it has not undergone the rigorous security audits, performance optimizations, and thorough testing required for production applications.
 
 ## Features
 

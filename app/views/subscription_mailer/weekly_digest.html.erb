@@ -1,0 +1,91 @@
+<div style="max-width: 600px; margin: 0 auto; font-family: system-ui, -apple-system, sans-serif;">
+  <div style="text-align: center; padding: 2rem 0;">
+    <%= image_tag "logo.png", alt: "Mofongo Blog", style: "max-width: 200px;" %>
+  </div>
+  
+  <div style="background-color: #ffffff; padding: 2rem; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+    <h1 style="color: #1a1a1a; margin-bottom: 1.5rem;">
+      Your Weekly Blog Digest
+    </h1>
+    
+    <p style="color: #4a5568; line-height: 1.6; margin-bottom: 1.5rem;">
+      Hi <%= @subscription.display_name %>,
+    </p>
+    
+    <p style="color: #4a5568; line-height: 1.6; margin-bottom: 1.5rem;">
+      Here's your weekly roundup of the latest posts and highlights from
+      <%= @start_date.strftime("%B %-d") %> to <%= @end_date.strftime("%B %-d") %>.
+    </p>
+    
+    <% if @blog_posts.any? %>
+      <h2 style="color: #2d3748; margin: 2rem 0 1rem;">Latest Posts</h2>
+      
+      <% @blog_posts.each do |post| %>
+        <div style="margin-bottom: 2rem;">
+          <% if post.featured_image.attached? %>
+            <%= image_tag post.featured_image.variant(resize_to_limit: [600, 300]),
+                style: "width: 100%; border-radius: 6px; margin-bottom: 1rem;" %>
+          <% end %>
+          
+          <h3 style="margin: 0 0 0.5rem;">
+            <%= link_to post.title,
+                blog_post_url(post),
+                style: "color: #2b6cb0; text-decoration: none;" %>
+          </h3>
+          
+          <div style="color: #718096; font-size: 0.875rem; margin-bottom: 0.5rem;">
+            By <%= post.user.display_name %> •
+            <%= post.published_at.strftime("%B %-d, %Y") %> •
+            <%= pluralize(post.estimated_reading_time, "minute") %> read
+          </div>
+          
+          <p style="color: #4a5568; margin: 0;">
+            <%= truncate(post.summary, length: 150) %>
+          </p>
+        </div>
+      <% end %>
+    <% end %>
+    
+    <% if @popular_posts.any? %>
+      <div style="background-color: #f7fafc; border-radius: 6px; padding: 1.5rem; margin: 2rem 0;">
+        <h2 style="color: #2d3748; margin: 0 0 1rem;">Most Popular This Week</h2>
+        
+        <% @popular_posts.each do |post| %>
+          <div style="margin-bottom: 1rem;">
+            <h3 style="margin: 0 0 0.25rem; font-size: 1.1rem;">
+              <%= link_to post.title,
+                  blog_post_url(post),
+                  style: "color: #2b6cb0; text-decoration: none;" %>
+            </h3>
+            
+            <div style="color: #718096; font-size: 0.875rem;">
+              <%= pluralize(post.likes.count, "like") %> •
+              <%= pluralize(post.comments.count, "comment") %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
+    
+    <div style="margin-top: 2rem; text-align: center;">
+      <%= link_to "View All Posts",
+          blog_posts_url,
+          style: "display: inline-block; background-color: #4299e1; color: white; text-decoration: none; padding: 0.75rem 1.5rem; border-radius: 4px;" %>
+    </div>
+  </div>
+  
+  <div style="text-align: center; padding: 2rem; color: #718096; font-size: 0.875rem;">
+    <p style="margin-bottom: 1rem;">
+      You're receiving this email because you subscribed to Mofongo Blog's weekly digest.
+    </p>
+    <p style="margin: 0;">
+      <%= link_to "Manage Preferences",
+          subscription_preferences_url(token: @subscription.token),
+          style: "color: #718096;" %>
+      •
+      <%= link_to "Unsubscribe",
+          unsubscribe_subscription_url(token: @subscription.token),
+          style: "color: #718096;" %>
+    </p>
+  </div>
+</div>

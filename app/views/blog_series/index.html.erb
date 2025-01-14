@@ -1,0 +1,42 @@
+<div class="container py-5">
+  <div class="row">
+    <div class="col-12">
+      <h1 class="mb-4">Blog Series</h1>
+
+      <div class="row">
+        <% @blog_series.each do |series| %>
+          <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100">
+              <div class="card-body">
+                <h5 class="card-title">
+                  <%= link_to series.title, blog_series_path(series), class: "text-decoration-none" %>
+                </h5>
+                
+                <div class="text-muted mb-3">
+                  <%= pluralize(series.total_posts, 'post') %> •
+                  <%= pluralize(series.reading_time.ceil, 'minute') %> read
+                </div>
+                
+                <div class="card-text mb-3">
+                  <%= truncate(strip_tags(series.description.to_s), length: 150) %>
+                </div>
+                
+                <%= link_to "Read series", blog_series_path(series), class: "btn btn-outline-primary btn-sm" %>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+
+      <% if @blog_series.empty? %>
+        <div class="alert alert-info">
+          No blog series available yet.
+        </div>
+      <% end %>
+
+      <div class="d-flex justify-content-center mt-4">
+        <%= paginate @blog_series %>
+      </div>
+    </div>
+  </div>
+</div>

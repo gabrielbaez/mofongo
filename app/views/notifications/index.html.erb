@@ -1,0 +1,29 @@
+<div class="container py-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Notifications</h1>
+    
+    <% if @notifications.unread.exists? %>
+      <%= button_to mark_all_as_read_notifications_path,
+          method: :patch,
+          class: "btn btn-outline-primary" do %>
+        <i class="bi bi-check2-all"></i> Mark all as read
+      <% end %>
+    <% end %>
+  </div>
+  
+  <div class="card">
+    <div class="list-group list-group-flush" id="notifications-list">
+      <%= render @notifications %>
+      
+      <% if @notifications.empty? %>
+        <div class="list-group-item text-center text-muted py-4">
+          No notifications yet
+        </div>
+      <% end %>
+    </div>
+  </div>
+  
+  <div class="mt-4">
+    <%= paginate @notifications %>
+  </div>
+</div>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        line-height: 1.6;
+        color: #333;
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+      .achievement {
+        background: #f8f9fa;
+        border-radius: 8px;
+        padding: 20px;
+        margin: 20px 0;
+        text-align: center;
+      }
+      .achievement-icon {
+        font-size: 48px;
+        margin-bottom: 15px;
+      }
+      .achievement-name {
+        font-size: 24px;
+        font-weight: bold;
+        color: #007bff;
+        margin-bottom: 10px;
+      }
+      .achievement-description {
+        color: #666;
+        margin-bottom: 15px;
+      }
+      .achievement-points {
+        font-weight: bold;
+        color: #28a745;
+      }
+      .button {
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: white;
+        text-decoration: none;
+        border-radius: 4px;
+        margin-top: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Congratulations, <%= @user.display_name %>! 🎉</h1>
+    
+    <p>You've unlocked a new achievement!</p>
+    
+    <div class="achievement">
+      <div class="achievement-icon">
+        <%= @achievement.badge_icon %>
+      </div>
+      
+      <div class="achievement-name">
+        <%= @achievement.name %>
+      </div>
+      
+      <div class="achievement-description">
+        <%= @achievement.description %>
+      </div>
+      
+      <div class="achievement-points">
+        +<%= @achievement.points %> points
+      </div>
+    </div>
+    
+    <p>Keep up the great work! View all your achievements on your profile:</p>
+    
+    <%= link_to "View Profile", profile_url(@user), class: "button" %>
+    
+    <p>
+      Best regards,<br>
+      The Blog Team
+    </p>
+  </body>
+</html>

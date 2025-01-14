@@ -1,0 +1,75 @@
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h1>Manage Tags</h1>
+  
+  <%= link_to new_admin_tag_path, class: "btn btn-primary" do %>
+    <i class="bi bi-plus-lg"></i> New Tag
+  <% end %>
+</div>
+
+<div class="card">
+  <div class="card-body">
+    <div class="table-responsive">
+      <table class="table table-striped table-hover align-middle mb-0">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Usage Count</th>
+            <th>Featured</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        
+        <tbody>
+          <% @tags.each do |tag| %>
+            <tr>
+              <td>
+                <%= link_to tag.name,
+                    admin_tag_path(tag),
+                    class: "text-decoration-none" %>
+              </td>
+              <td class="text-muted">
+                <%= truncate(tag.description, length: 100) if tag.description %>
+              </td>
+              <td>
+                <%= tag.usage_count %>
+              </td>
+              <td>
+                <% if tag.featured? %>
+                  <span class="badge bg-success">Featured</span>
+                <% end %>
+              </td>
+              <td>
+                <div class="btn-group">
+                  <%= link_to edit_admin_tag_path(tag),
+                      class: "btn btn-sm btn-outline-primary" do %>
+                    <i class="bi bi-pencil"></i>
+                  <% end %>
+                  
+                  <%= link_to merge_admin_tag_path(tag),
+                      class: "btn btn-sm btn-outline-warning" do %>
+                    <i class="bi bi-arrows-collapse"></i>
+                  <% end %>
+                  
+                  <%= button_to admin_tag_path(tag),
+                      method: :delete,
+                      class: "btn btn-sm btn-outline-danger",
+                      form: {
+                        data: {
+                          turbo_confirm: "Are you sure? This will remove the tag from all posts."
+                        }
+                      } do %>
+                    <i class="bi bi-trash"></i>
+                  <% end %>
+                </div>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="d-flex justify-content-center mt-4">
+  <%= paginate @tags %></div>

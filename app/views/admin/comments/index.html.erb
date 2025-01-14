@@ -1,0 +1,62 @@
+<div class="container-fluid">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Pending Comments</h1>
+  </div>
+
+  <div class="card">
+    <div class="card-body">
+      <% if @comments.any? %>
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Author</th>
+                <th>Comment</th>
+                <th>Post</th>
+                <th>Submitted</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @comments.each do |comment| %>
+                <tr>
+                  <td>
+                    <div><%= comment.author_name %></div>
+                    <small class="text-muted"><%= comment.author_email %></small>
+                  </td>
+                  <td><%= truncate(comment.content, length: 100) %></td>
+                  <td>
+                    <%= link_to comment.blog_post.title,
+                        blog_post_path(comment.blog_post),
+                        target: "_blank",
+                        class: "text-decoration-none" %>
+                  </td>
+                  <td><%= time_ago_in_words(comment.created_at) %> ago</td>
+                  <td>
+                    <%= button_to "Approve",
+                        approve_admin_comment_path(comment),
+                        method: :patch,
+                        class: "btn btn-sm btn-success me-2" %>
+                    <%= button_to "Delete",
+                        admin_comment_path(comment),
+                        method: :delete,
+                        class: "btn btn-sm btn-danger",
+                        data: { turbo_confirm: "Are you sure?" } %>
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="d-flex justify-content-center mt-4">
+          <%= paginate @comments %>
+        </div>
+      <% else %>
+        <div class="text-center py-4">
+          <p class="text-muted mb-0">No pending comments to review.</p>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

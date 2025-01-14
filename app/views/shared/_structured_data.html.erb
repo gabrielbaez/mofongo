@@ -1,0 +1,37 @@
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  <% if meta_type == 'article' %>
+    "@type": "BlogPosting",
+    "headline": "<%= meta_title %>",
+    "description": "<%= meta_description %>",
+    "image": "<%= meta_image %>",
+    "datePublished": "<%= meta_published_time&.iso8601 %>",
+    "dateModified": "<%= local_assigns[:meta_modified_time]&.iso8601 || meta_published_time&.iso8601 %>",
+    "author": {
+      "@type": "Person",
+      "name": "<%= meta_author %>"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Mofongo",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "<%= asset_url('logo.png') %>"
+      }
+    },
+    <% if local_assigns[:meta_tags].present? %>
+      "keywords": "<%= meta_tags.join(', ') %>",
+    <% end %>
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": "<%= meta_canonical %>"
+    }
+  <% else %>
+    "@type": "WebSite",
+    "name": "<%= meta_title %>",
+    "description": "<%= meta_description %>",
+    "url": "<%= request.original_url %>"
+  <% end %>
+}
+</script>

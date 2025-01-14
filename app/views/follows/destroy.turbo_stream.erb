@@ -1,0 +1,7 @@
+<%= turbo_stream.replace "follow_button" do %>
+  <%= button_to profile_follow_path(@user),
+      method: :post,
+      class: "btn btn-primary" do %>
+    <i class="bi bi-person-plus"></i> Follow
+  <% end %>
+<% end %>

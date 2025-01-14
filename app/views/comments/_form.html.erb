@@ -1,0 +1,37 @@
+<div class="comment-form mb-4">
+  <% if user_signed_in? %>
+    <%= form_with(model: [blog_post, comment], local: true) do |f| %>
+      <% if comment.errors.any? %>
+        <div class="alert alert-danger">
+          <h4><%= pluralize(comment.errors.count, "error") %> prohibited this comment from being saved:</h4>
+          <ul>
+            <% comment.errors.full_messages.each do |msg| %>
+              <li><%= msg %></li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+
+      <%= f.hidden_field :parent_id if local_assigns[:parent_id] %>
+
+      <div class="mb-3">
+        <%= f.label :content, "Comment", class: "form-label" %>
+        <%= f.text_area :content, rows: 4, class: "form-control", required: true %>
+      </div>
+
+      <% if !local_assigns[:parent_id] %>
+        <div class="mb-3">
+          <%= recaptcha_tags %>
+        </div>
+      <% end %>
+
+      <div class="d-flex justify-content-between align-items-center">
+        <%= f.submit "Post Comment", class: "btn btn-primary" %>
+      </div>
+    <% end %>
+  <% else %>
+    <div class="alert alert-info">
+      Please <%= link_to "sign in", new_user_session_path %> to post a comment.
+    </div>
+  <% end %>
+</div>

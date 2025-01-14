@@ -1,0 +1,45 @@
+<div class="container-fluid">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Blog Posts</h1>
+    <%= link_to "New Post", new_admin_blog_post_path, class: "btn btn-primary" %>
+  </div>
+
+  <div class="card">
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>Title</th>
+              <th>Category</th>
+              <th>Status</th>
+              <th>Published At</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @blog_posts.each do |post| %>
+              <tr>
+                <td><%= post.title %></td>
+                <td><%= post.blog_category&.name %></td>
+                <td>
+                  <span class="badge <%= post.published? ? 'bg-success' : 'bg-secondary' %>">
+                    <%= post.published? ? 'Published' : 'Draft' %>
+                  </span>
+                </td>
+                <td><%= post.published_at&.strftime("%B %d, %Y") %></td>
+                <td>
+                  <%= link_to "View", blog_post_path(post), class: "btn btn-sm btn-outline-info me-2", target: "_blank" if post.published? %>
+                  <%= link_to "Edit", edit_admin_blog_post_path(post), class: "btn btn-sm btn-outline-primary me-2" %>
+                  <%= link_to "Delete", admin_blog_post_path(post), 
+                      data: { turbo_method: :delete, turbo_confirm: "Are you sure?" },
+                      class: "btn btn-sm btn-outline-danger" %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

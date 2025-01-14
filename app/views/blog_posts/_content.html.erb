@@ -1,0 +1,93 @@
+<%# This partial is used to render the blog post content in various formats (HTML, RSS, etc.) %>
+
+<article class="blog-post">
+  <% if post.featured_image.attached? %>
+    <div class="blog-post-image mb-4">
+      <%= image_tag post.featured_image,
+          class: "img-fluid rounded w-100",
+          alt: post.title %>
+    </div>
+  <% end %>
+  
+  <div class="blog-post-meta text-muted mb-4">
+    <div class="d-flex align-items-center">
+      <%= link_to profile_path(post.user), class: "text-decoration-none me-2" do %>
+        <% if post.user.avatar.attached? %>
+          <%= image_tag post.user.avatar.variant(resize_to_fill: [40, 40]),
+              class: "rounded-circle",
+              alt: post.user.display_name %>
+        <% else %>
+          <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center"
+               style="width: 40px; height: 40px;">
+            <%= post.user.display_name.first.upcase %>
+          </div>
+        <% end %>
+      <% end %>
+      
+      <div>
+        <div>
+          <%= link_to post.user.display_name,
+              profile_path(post.user),
+              class: "text-decoration-none fw-bold" %>
+        </div>
+        
+        <div class="small">
+          <time datetime="<%= post.published_at.iso8601 %>">
+            <%= post.published_at.strftime("%B %-d, %Y") %>
+          </time>
+          
+          <span class="mx-1">•</span>
+          
+          <span title="Estimated reading time">
+            <%= pluralize(post.estimated_reading_time, "minute") %> read
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="blog-post-content">
+    <%= post.content %>
+  </div>
+  
+  <% if post.tags.any? %>
+    <div class="blog-post-tags mt-4">
+      <% post.tags.each do |tag| %>
+        <%= link_to tag.name,
+            tagged_blog_posts_path(tag.name),
+            class: "badge bg-light text-dark text-decoration-none me-1" %>
+      <% end %>
+    </div>
+  <% end %>
+  
+  <% if post.blog_series %>
+    <div class="blog-post-series card mt-4">
+      <div class="card-body">
+        <h5 class="card-title">
+          Part of the series:
+          <%= link_to post.blog_series.title,
+              blog_series_path(post.blog_series),
+              class: "text-decoration-none" %>
+        </h5>
+        
+        <div class="d-flex justify-content-between align-items-center mt-3">
+          <% if post.prev_in_series %>
+            <%= link_to blog_post_path(post.prev_in_series),
+                class: "btn btn-outline-primary" do %>
+              <i class="bi bi-arrow-left"></i>
+              Previous Post
+            <% end %>
+          <% end %>
+          
+          <% if post.next_in_series %>
+            <%= link_to blog_post_path(post.next_in_series),
+                class: "btn btn-outline-primary" do %>
+              Next Post
+              <i class="bi bi-arrow-right"></i>
+            <% end %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  <% end %>
+</article>

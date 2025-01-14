@@ -1,0 +1,26 @@
+confirmed:
+  email: confirmed@example.com
+  name: Confirmed User
+  token: <%= SecureRandom.hex(32) %>
+  confirmed_at: <%= Time.current %>
+  preferences:
+    - new_posts
+    - weekly_digest
+
+unconfirmed:
+  email: unconfirmed@example.com
+  name: Unconfirmed User
+  token: <%= SecureRandom.hex(32) %>
+  confirmed_at: null
+  preferences:
+    - new_posts
+
+unsubscribed:
+  email: unsubscribed@example.com
+  name: Unsubscribed User
+  token: <%= SecureRandom.hex(32) %>
+  confirmed_at: <%= Time.current %>
+  unsubscribed_at: <%= Time.current %>
+  preferences:
+    - new_posts
+    - weekly_digest

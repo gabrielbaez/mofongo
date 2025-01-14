@@ -1,0 +1,128 @@
+<div class="container py-4">
+  <div class="row">
+    <div class="col-lg-8">
+      <div class="card">
+        <div class="card-header">
+          <h1 class="h3 mb-0">Leaderboard</h1>
+        </div>
+        
+        <div class="list-group list-group-flush">
+          <% @top_users.each_with_index do |user, index| %>
+            <%= link_to profile_path(user), class: "list-group-item list-group-item-action #{'bg-light' if user == current_user}" do %>
+              <div class="d-flex align-items-center">
+                <div class="h4 mb-0 me-3 text-muted" style="width: 2.5rem;">
+                  <%= index + 1 %>
+                </div>
+                
+                <div class="flex-grow-1">
+                  <h6 class="mb-0">
+                    <%= user.display_name %>
+                    <% if user == current_user %>
+                      <small class="text-muted">(You)</small>
+                    <% end %>
+                  </h6>
+                  
+                  <small class="text-muted">
+                    <%= pluralize(user.achievements_count, 'achievement') %>
+                  </small>
+                </div>
+                
+                <div class="text-end">
+                  <div class="h5 mb-0 text-primary">
+                    <%= user.total_points %> points
+                  </div>
+                </div>
+              </div>
+            <% end %>
+          <% end %>
+        </div>
+      </div>
+      
+      <% if user_signed_in? && !@top_users.exists?(current_user.id) %>
+        <div class="alert alert-info mt-4">
+          <div class="d-flex align-items-center">
+            <div class="h4 mb-0 me-3 text-muted" style="width: 2.5rem;">
+              <%= @current_user_rank %>
+            </div>
+            
+            <div class="flex-grow-1">
+              <h6 class="mb-0">
+                <%= current_user.display_name %>
+                <small class="text-muted">(You)</small>
+              </h6>
+              
+              <small class="text-muted">
+                <%= pluralize(current_user.achievements.count, 'achievement') %>
+              </small>
+            </div>
+            
+            <div class="text-end">
+              <div class="h5 mb-0">
+                <%= current_user.total_points %> points
+              </div>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+    
+    <div class="col-lg-4">
+      <div class="card mb-4">
+        <div class="card-header">
+          <h5 class="card-title mb-0">Categories</h5>
+        </div>
+        <div class="list-group list-group-flush">
+          <% @categories.each do |key, name| %>
+            <%= link_to leaderboard_path(category: key),
+                class: "list-group-item list-group-item-action #{'active' if params[:category] == key.to_s}" do %>
+              <%= name %>
+            <% end %>
+          <% end %>
+        </div>
+      </div>
+      
+      <% if @achievements %>
+        <div class="card">
+          <div class="card-header">
+            <h5 class="card-title mb-0">
+              <%= @categories[params[:category].to_sym] %> Achievements
+            </h5>
+          </div>
+          <div class="list-group list-group-flush">
+            <% @achievements.each do |achievement| %>
+              <div class="list-group-item">
+                <div class="d-flex align-items-center">
+                  <div class="achievement-icon me-3">
+                    <%= achievement.badge_icon %>
+                  </div>
+                  <div>
+                    <h6 class="mb-0"><%= achievement.name %></h6>
+                    <small class="text-muted">
+                      <%= achievement.description %> •
+                      <span class="text-success">+<%= achievement.points %> points</span>
+                    </small>
+                    
+                    <% if user_signed_in? %>
+                      <% progress = achievement.progress_for(current_user) %>
+                      <div class="progress mt-2" style="height: 5px;">
+                        <div class="progress-bar" role="progressbar"
+                             style="width: <%= progress.percentage %>%"
+                             aria-valuenow="<%= progress.percentage %>"
+                             aria-valuemin="0"
+                             aria-valuemax="100"></div>
+                      </div>
+                      <small class="text-muted">
+                        <%= progress.current_value %>/<%= progress.target_value %>
+                        (<%= progress.remaining %> to go)
+                      </small>
+                    <% end %>
+                  </div>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

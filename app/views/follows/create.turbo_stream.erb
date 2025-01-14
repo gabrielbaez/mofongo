@@ -1,0 +1,7 @@
+<%= turbo_stream.replace "follow_button" do %>
+  <%= button_to profile_follow_path(@user),
+      method: :delete,
+      class: "btn btn-outline-primary" do %>
+    <i class="bi bi-person-dash"></i> Unfollow
+  <% end %>
+<% end %>

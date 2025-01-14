@@ -21,6 +21,46 @@
         Users
       <% end %>
     </li>
+    
+    <li>
+      <%= link_to admin_blog_posts_path,
+                  class: "nav-link #{controller_name == 'blog_posts' ? 'active' : 'text-white'}" do %>
+        <i class="fas fa-file-alt me-2"></i>
+        Blog Posts
+      <% end %>
+    </li>
+    
+    <li>
+      <%= link_to admin_tags_path,
+                  class: "nav-link #{controller_name == 'tags' ? 'active' : 'text-white'}" do %>
+        <i class="fas fa-tags me-2"></i>
+        Tags
+      <% end %>
+    </li>
+    
+    <li>
+      <%= link_to admin_gallery_images_path,
+                  class: "nav-link #{controller_name == 'gallery_images' ? 'active' : 'text-white'}" do %>
+        <i class="fas fa-images me-2"></i>
+        Gallery
+      <% end %>
+    </li>
+    
+    <li>
+      <%= link_to admin_achievements_path,
+                  class: "nav-link #{controller_name == 'achievements' ? 'active' : 'text-white'}" do %>
+        <i class="fas fa-trophy me-2"></i>
+        Achievements
+      <% end %>
+    </li>
+    
+    <li>
+      <%= link_to admin_comments_path,
+                  class: "nav-link #{controller_name == 'comments' ? 'active' : 'text-white'}" do %>
+        <i class="fas fa-comments me-2"></i>
+        Comments
+      <% end %>
+    </li>
   </ul>
 
   <hr>

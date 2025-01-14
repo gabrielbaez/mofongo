@@ -1,0 +1,42 @@
+<div class="modal fade" id="share-achievement-<%= user_achievement.id %>" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Share Achievement</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      
+      <%= form_with(url: achievement_shares_path(user_achievement_id: user_achievement.id)) do |f| %>
+        <div class="modal-body">
+          <div class="d-flex align-items-center mb-4">
+            <div class="achievement-icon me-3 fs-2">
+              <%= user_achievement.achievement.badge_icon %>
+            </div>
+            
+            <div>
+              <h6 class="mb-1"><%= user_achievement.achievement.name %></h6>
+              <div class="text-muted small">
+                <%= user_achievement.achievement.description %> •
+                <span class="text-success">+<%= user_achievement.achievement.points %> points</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="mb-3">
+            <%= f.label :message, "Add a message (optional)", class: "form-label" %>
+            <%= f.text_area :message,
+                class: "form-control",
+                rows: 3,
+                maxlength: 280,
+                placeholder: "Share your thoughts about this achievement..." %>
+          </div>
+        </div>
+        
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <%= f.submit "Share Achievement", class: "btn btn-primary" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

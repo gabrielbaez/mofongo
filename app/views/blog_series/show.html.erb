@@ -1,0 +1,85 @@
+<div class="container py-5">
+  <div class="row">
+    <div class="col-lg-8">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><%= link_to "Blog", blog_posts_path %></li>
+          <li class="breadcrumb-item"><%= link_to "Series", blog_series_index_path %></li>
+          <li class="breadcrumb-item active" aria-current="page"><%= @blog_series.title %></li>
+        </ol>
+      </nav>
+
+      <div class="mb-5">
+        <h1 class="mb-3"><%= @blog_series.title %></h1>
+        
+        <div class="text-muted mb-4">
+          <%= pluralize(@blog_series.total_posts, 'post') %> •
+          <%= pluralize(@blog_series.reading_time.ceil, 'minute') %> read
+        </div>
+        
+        <div class="series-description mb-5">
+          <%= @blog_series.description %>
+        </div>
+      </div>
+
+      <div class="series-posts">
+        <% @blog_posts.each_with_index do |post, index| %>
+          <div class="card mb-4">
+            <div class="card-body">
+              <div class="d-flex align-items-center mb-3">
+                <div class="series-post-number me-3">
+                  <span class="badge bg-primary rounded-circle p-2">
+                    <%= index + 1 %>
+                  </span>
+                </div>
+                
+                <h2 class="h5 mb-0">
+                  <%= link_to post.title, blog_post_path(post), class: "text-decoration-none" %>
+                </h2>
+              </div>
+              
+              <div class="text-muted small mb-3">
+                Published <%= time_ago_in_words(post.published_at) %> ago
+                in <%= link_to post.blog_category.name, blog_category_path(post.blog_category) %>
+              </div>
+              
+              <div class="mb-3">
+                <%= truncate(strip_tags(post.content.to_plain_text), length: 200) %>
+              </div>
+              
+              <div class="d-flex justify-content-between align-items-center">
+                <%= link_to "Read post", blog_post_path(post), class: "btn btn-outline-primary btn-sm" %>
+                
+                <div class="text-muted small">
+                  <%= pluralize(post.comments.count, 'comment') %>
+                </div>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="col-lg-4">
+      <div class="card">
+        <div class="card-header">
+          <h5 class="card-title mb-0">Series Overview</h5>
+        </div>
+        <div class="list-group list-group-flush">
+          <% @blog_posts.each_with_index do |post, index| %>
+            <%= link_to blog_post_path(post),
+                class: "list-group-item list-group-item-action d-flex align-items-center" do %>
+              <span class="badge bg-secondary me-2"><%= index + 1 %></span>
+              <div>
+                <%= post.title %>
+                <% if post == @blog_post %>
+                  <span class="badge bg-primary ms-2">Current</span>
+                <% end %>
+              </div>
+            <% end %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
