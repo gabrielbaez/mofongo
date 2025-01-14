@@ -73,6 +73,7 @@ group :development, :test do
   gem "rubocop", require: false
   gem "rubocop-rails", require: false
   gem "rubocop-rspec", require: false
+  gem "rubocop-rails-omakase", require: false
 end
 
 group :test do
