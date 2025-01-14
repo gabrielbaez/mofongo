@@ -4,6 +4,7 @@ on:
   pull_request:
   push:
     branches: [ main ]
+  workflow_dispatch:
 
 jobs:
   scan_ruby:
@@ -98,8 +99,18 @@ jobs:
           RAILS_ENV: test
           DATABASE_URL: postgres://postgres:postgres@localhost:5432/postgres
           CHROME_HEADLESS: true
+          COVERAGE: true
+          PARALLEL_WORKERS: 2
         run: |
-          bin/rails test:all
+          bin/rails test
+          bin/rails test:system
+
+      - name: Upload test coverage
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: coverage-report
+          path: coverage/
 
       - name: Keep screenshots from failed system tests
         uses: actions/upload-artifact@v4
