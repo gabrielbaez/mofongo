@@ -8,6 +8,7 @@
 
     <%= stylesheet_link_tag "admin", "data-turbo-track": "reload" %>
     <link href="https://use.fontawesome.com/releases/v6.4.2/css/all.css" rel="stylesheet">
+    <%= javascript_include_tag "admin", "data-turbo-track": "reload", defer: true %>
   </head>
 
   <body>
@@ -33,7 +34,7 @@
             </div>
             <div class="user-info">
               <span class="user-name"><%= current_user.name %></span>
-              <span class="user-role"><%= current_user.role_id.titleize %></span>
+              <span class="user-role"><%= current_user.role.titleize %></span>
               <span class="user-status">
                 <i class="fa fa-circle"></i>
                 <span>Online</span>
@@ -54,23 +55,23 @@
                 <% end %>
               </li>
 
-              <li class="sidebar-menu">
-                  <%= link_to admin_users_path do %>
-                    <i class="fas fa-users"></i>
-                    Users 
-                  <% end %>
+              <li>
+                <%= link_to "#", class: "has-submenu" do %>
+                  <i class="fas fa-users"></i>
+                  <span>Users</span>
+                <% end %>
                 <div class="sidebar-submenu">
                   <ul>
                     <li>
                       <%= link_to admin_users_path do %>
                         <i class="fas fa-list"></i>
-                        List Users
+                        <span>List Users</span>
                       <% end %>
                     </li>
                     <li>
                       <%= link_to new_admin_user_path do %>
                         <i class="fas fa-user-plus"></i>
-                        New User
+                        <span>New User</span>
                       <% end %>
                     </li>
                   </ul>
@@ -111,7 +112,5 @@
         </div>
       </main>
     </div>
-
-    <%= javascript_include_tag "admin", "data-turbo-track": "reload", defer: true %>
   </body>
 </html>
