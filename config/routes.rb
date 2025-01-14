@@ -6,7 +6,8 @@ Rails.application.routes.draw do
   get "up" => "rails/health#show", as: :rails_health_check
 
   devise_for :users, controllers: {
-    registrations: "users/registrations"
+    registrations: "users/registrations",
+    sessions: "users/sessions"
   }
   
   # Profile routes
@@ -20,7 +21,7 @@ Rails.application.routes.draw do
 
   # Root path handling
   authenticated :user do
-    root to: "admin/dashboard#index", as: :authenticated_root
+    root to: "home#index", as: :authenticated_root
   end
   
   # Default root path for non-authenticated users

@@ -1,26 +1,15 @@
-// Configure your import map in config/importmap.rb. Read more: https://github.com/rails/importmap-rails
+// Configure your import map in config/importmap.rb
 import "@hotwired/turbo-rails"
-import "controllers"
+import "./controllers"
 import * as bootstrap from "bootstrap"
 
-// Initialize Bootstrap components
-const initBootstrap = () => {
-  // Enable all Bootstrap dropdowns
-  const dropdownElementList = document.querySelectorAll('.dropdown-toggle')
-  dropdownElementList.forEach(dropdownToggle => {
-    new bootstrap.Dropdown(dropdownToggle)
-  })
+// Initialize Bootstrap tooltips and popovers
+document.addEventListener("turbo:load", () => {
+  // Initialize Bootstrap tooltips
+  const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+  const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
 
-  // Enable all Bootstrap collapses
-  const collapseElementList = document.querySelectorAll('.collapse')
-  collapseElementList.forEach(collapseEl => {
-    new bootstrap.Collapse(collapseEl, {
-      toggle: false
-    })
-  })
-}
-
-// Initialize on page load
-document.addEventListener('turbo:load', initBootstrap)
-// Re-initialize after any Turbo navigation
-document.addEventListener('turbo:render', initBootstrap)
+  // Initialize Bootstrap popovers
+  const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]')
+  const popoverList = [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl))
+})

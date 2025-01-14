@@ -6,10 +6,10 @@
           <h2 class="text-center">Sign in</h2>
         </div>
         <div class="card-body">
-          <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
+          <%= form_for(resource, as: resource_name, url: session_path(resource_name), data: { turbo: true }) do |f| %>
             <div class="mb-3">
               <%= f.label :username, class: "form-label" %>
-              <%= f.text_field :username, autofocus: true, class: "form-control" %>
+              <%= f.text_field :username, class: "form-control" %>
             </div>
 
             <div class="mb-3">

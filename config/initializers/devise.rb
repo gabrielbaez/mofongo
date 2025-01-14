@@ -20,7 +20,10 @@ Devise.setup do |config|
   config.password_length = 6..128
 
   # ==> Navigation configuration
-  config.sign_out_via = :delete
+  config.sign_out_via = [:delete, :get]
+  config.navigational_formats = ['*/*', :html, :turbo_stream]
+  config.responder.error_status = :unprocessable_entity
+  config.responder.redirect_status = :see_other
 
   # ==> Mailer Configuration
   config.mailer_sender = 'please-change-me-at-config-initializers-devise@example.com'

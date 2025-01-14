@@ -18,6 +18,7 @@ RUN apt-get update -qq && \
     npm \
     chromium \
     chromium-driver \
+    dos2unix \
     && rm -rf /var/lib/apt/lists/*
 
 # Install yarn
@@ -49,13 +50,15 @@ COPY --chown=appuser:appuser . .
 
 # Make entrypoint script executable and ensure Unix line endings
 USER root
-RUN sed -i 's/\r$//' /app/entrypoint.sh && \
-    chmod +x /app/entrypoint.sh
+RUN chmod +x /app/entrypoint.sh && \
+    dos2unix /app/entrypoint.sh && \
+    find /app/bin -type f -exec dos2unix {} \; && \
+    chown appuser:appuser /app/entrypoint.sh
+
 USER appuser
 
-# Set up entrypoint
+# Set the entrypoint script
 ENTRYPOINT ["/app/entrypoint.sh"]
 
-# Configure the main process to run when running the image
-EXPOSE 3000
+# Start the Rails server by default
 CMD ["rails", "server", "-b", "0.0.0.0"]

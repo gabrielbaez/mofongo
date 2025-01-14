@@ -15,7 +15,7 @@ module Authorization
   end
 
   def require_admin
-    unless admin?
+    if !admin?
       flash[:alert] = "You are not authorized to perform this action."
       redirect_to root_path
     end
@@ -31,6 +31,8 @@ module Authorization
   def after_sign_in_path_for(resource)
     if resource.administrator?
       admin_dashboard_path
+    elsif resource.moderator?
+      moderator_dashboard_path
     else
       root_path
     end

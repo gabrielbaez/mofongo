@@ -7,85 +7,20 @@
     <%= csp_meta_tag %>
 
     <%= stylesheet_link_tag "application.bootstrap", "data-turbo-track": "reload" %>
-    <%= javascript_include_tag "application", "data-turbo-track": "reload", defer: true %>
     <%= javascript_importmap_tags %>
   </head>
 
   <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-      <div class="container">
-        <%= link_to 'Mofongo', root_path, class: 'navbar-brand' %>
-        
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain" aria-controls="navbarMain" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
+    <%= render "shared/navbar" %>
 
-        <div class="collapse navbar-collapse" id="navbarMain">
-          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-            <li class="nav-item">
-              <%= link_to root_path, class: "nav-link #{current_page?(root_path) ? 'active' : ''}" do %>
-                <i class="bi bi-house-door"></i> Home
-              <% end %>
-            </li>
-          </ul>
-
-          <ul class="navbar-nav ms-auto">
-            <% if user_signed_in? %>
-              <% if current_user.administrator? %>
-                <li class="nav-item">
-                  <%= link_to admin_dashboard_path, class: "nav-link #{request.path.start_with?('/admin') ? 'active' : ''}" do %>
-                    <i class="bi bi-speedometer2"></i> Admin Dashboard
-                  <% end %>
-                </li>
-              <% end %>
-              
-              <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                  <i class="bi bi-person-circle"></i>
-                  <%= current_user.name %>
-                  <span class="badge rounded-pill bg-<%= current_user.administrator? ? 'danger' : (current_user.moderator? ? 'warning' : 'primary') %>">
-                    <%= current_user.role_id.titleize %>
-                  </span>
-                </a>
-                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                  <li>
-                    <%= link_to profile_path, class: "dropdown-item" do %>
-                      <i class="bi bi-person"></i> My Profile
-                    <% end %>
-                  </li>
-                  <li><hr class="dropdown-divider"></li>
-                  <li>
-                    <%= button_to destroy_user_session_path, method: :delete, class: "dropdown-item text-danger", form: { data: { turbo: false } } do %>
-                      <i class="bi bi-box-arrow-right"></i> Sign Out
-                    <% end %>
-                  </li>
-                </ul>
-              </li>
-            <% else %>
-              <li class="nav-item">
-                <%= link_to new_user_registration_path, class: "nav-link" do %>
-                  <i class="bi bi-person-plus"></i> Register
-                <% end %>
-              </li>
-              <li class="nav-item">
-                <%= link_to new_user_session_path, class: "nav-link" do %>
-                  <i class="bi bi-box-arrow-in-right"></i> Sign In
-                <% end %>
-              </li>
-            <% end %>
-          </ul>
-        </div>
-      </div>
-    </nav>
-
-    <div class="container mt-3">
+    <div class="container mt-4">
       <% if notice %>
         <div class="alert alert-success alert-dismissible fade show" role="alert">
           <%= notice %>
           <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
       <% end %>
-      
+
       <% if alert %>
         <div class="alert alert-danger alert-dismissible fade show" role="alert">
           <%= alert %>

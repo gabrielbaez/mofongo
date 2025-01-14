@@ -2,23 +2,48 @@ class User < ApplicationRecord
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
   devise :database_authenticatable, :registerable,
-         :recoverable, :rememberable, :trackable,
-         :authentication_keys => [:username]
+         :recoverable, :rememberable, :validatable,
+         authentication_keys: [:username]
 
   # Define roles enum
-  enum role_id: {
-    user: 0,
-    moderator: 1,
-    administrator: 2
-  }
+  enum :role_id, { user: 0, moderator: 1, administrator: 2 }
 
-  validates :username, presence: true, uniqueness: true
+  # Role convenience methods
+  def administrator!
+    update!(role_id: :administrator)
+  end
+
+  def user!
+    update!(role_id: :user)
+  end
+
+  def moderator!
+    update!(role_id: :moderator)
+  end
+
+  validates :username, presence: true, uniqueness: { case_sensitive: false }
   validates :name, presence: true
-  validates :email, presence: true, uniqueness: true
+  validates :email, presence: true, uniqueness: { case_sensitive: false }
+  validates :terms_of_service, acceptance: true, on: :create
 
-  # Virtual attribute for accepting terms
-  attr_accessor :terms_of_service
-  validates :terms_of_service, acceptance: true
+  # Allow authentication with either username or email
+  def self.find_first_by_auth_conditions(warden_conditions)
+    conditions = warden_conditions.dup
+    if login = conditions.delete(:login)
+      where(conditions).where(["lower(username) = :value OR lower(email) = :value", { value: login.downcase }]).first
+    else
+      where(conditions).first
+    end
+  end
+
+  # Callbacks
+  before_save :downcase_email
+  
+  private
+
+  def downcase_email
+    self.email = email.downcase if email.present?
+  end
 
   def role_display
     role_id.to_s.titleize
