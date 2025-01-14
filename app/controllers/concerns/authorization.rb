@@ -7,11 +7,11 @@ module Authorization
   end
 
   def admin?
-    user_signed_in? && current_user.admin?
+    user_signed_in? && current_user.administrator?
   end
 
   def moderator_or_admin?
-    user_signed_in? && current_user.moderator_or_admin?
+    user_signed_in? && (current_user.moderator? || current_user.administrator?)
   end
 
   def require_admin
@@ -25,6 +25,14 @@ module Authorization
     unless moderator_or_admin?
       flash[:alert] = "You are not authorized to perform this action."
       redirect_to root_path
+    end
+  end
+
+  def after_sign_in_path_for(resource)
+    if resource.administrator?
+      admin_dashboard_path
+    else
+      root_path
     end
   end
 end

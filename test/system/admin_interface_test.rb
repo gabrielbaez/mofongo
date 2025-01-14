@@ -51,7 +51,7 @@ class AdminInterfaceTest < ApplicationSystemTestCase
     visit admin_dashboard_path
     
     within(".user-info") do
-      assert_selector ".user-role", text: "Administrator"
+      assert_selector ".user-role", text: "Admin"
       assert_selector ".user-status", text: "Online"
     end
   end

@@ -4,6 +4,12 @@ module AuthenticationHelper
     fill_in "Username", with: user.username
     fill_in "Password", with: "password123"
     click_button "Sign in"
-    assert_current_path root_path
+    
+    # Verify successful login and proper redirection based on role
+    if user.administrator?
+      assert_current_path admin_dashboard_path
+    else
+      assert_current_path root_path
+    end
   end
 end

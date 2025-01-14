@@ -14,10 +14,11 @@ Rails.application.routes.draw do
   
   # Admin routes
   namespace :admin do
-    get 'dashboard', to: 'admin#dashboard'
+    get 'dashboard', to: 'dashboard#index', as: :dashboard
+    root to: 'dashboard#index'
     resources :users
   end
   
   # Defines the root path route ("/")
-  root 'home#index'
+  root "home#index"
 end

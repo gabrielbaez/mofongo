@@ -3,7 +3,7 @@ admin:
   encrypted_password: <%= BCrypt::Password.create('password123') %>
   name: Admin User
   email: admin@example.com
-  role_id: 1
+  role_id: 2  # administrator role
   created_at: <%= Time.current %>
   updated_at: <%= Time.current %>
 
@@ -12,6 +12,6 @@ regular:
   encrypted_password: <%= BCrypt::Password.create('password123') %>
   name: Regular User
   email: user@example.com
-  role_id: 0
+  role_id: 0  # user role
   created_at: <%= Time.current %>
   updated_at: <%= Time.current %>

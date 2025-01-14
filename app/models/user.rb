@@ -20,6 +20,10 @@ class User < ApplicationRecord
   attr_accessor :terms_of_service
   validates :terms_of_service, acceptance: true
 
+  def role_display
+    role_id.to_s.titleize
+  end
+
   def admin?
     administrator?
   end
