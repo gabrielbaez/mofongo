@@ -1,34 +1,54 @@
 <div class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark h-100" style="width: 280px;">
-  <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+  <%= link_to "/", class: "d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none" do %>
     <span class="fs-4">Mofongo Admin</span>
-  </a>
+  <% end %>
+
   <hr>
+
   <ul class="nav nav-pills flex-column mb-auto">
     <li class="nav-item">
-      <%= link_to admin_dashboard_path, class: "nav-link #{current_page?(admin_dashboard_path) ? 'active' : 'text-white'}" do %>
+      <%= link_to admin_dashboard_path,
+                  class: "nav-link #{current_page?(admin_dashboard_path) ? 'active' : 'text-white'}" do %>
         <i class="fas fa-gauge me-2"></i>
         Dashboard
       <% end %>
     </li>
+
     <li>
-      <%= link_to admin_users_path, class: "nav-link #{current_page?(admin_users_path) ? 'active' : 'text-white'}" do %>
+      <%= link_to admin_users_path,
+                  class: "nav-link #{current_page?(admin_users_path) ? 'active' : 'text-white'}" do %>
         <i class="fas fa-users me-2"></i>
         Users
       <% end %>
     </li>
   </ul>
+
   <hr>
+
   <div class="dropdown">
-    <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
-      <div class="rounded-circle bg-white text-dark d-flex align-items-center justify-content-center me-2" style="width: 32px; height: 32px; font-size: 16px;">
+    <%= link_to "#",
+                class: "d-flex align-items-center text-white text-decoration-none dropdown-toggle",
+                id: "dropdownUser1",
+                data: { "bs-toggle": "dropdown" },
+                aria: { expanded: false } do %>
+      <div class="rounded-circle bg-white text-dark d-flex align-items-center justify-content-center me-2"
+           style="width: 32px; height: 32px; font-size: 16px;">
         <%= current_user.name.first %>
       </div>
       <strong><%= current_user.name %></strong>
-    </a>
+    <% end %>
+
     <ul class="dropdown-menu dropdown-menu-dark text-small shadow" aria-labelledby="dropdownUser1">
-      <li><%= link_to "Profile", edit_user_registration_path, class: "dropdown-item" %></li>
+      <li>
+        <%= link_to "Profile", edit_user_registration_path, class: "dropdown-item" %>
+      </li>
       <li><hr class="dropdown-divider"></li>
-      <li><%= link_to "Sign out", destroy_user_session_path, data: { "turbo-method": :delete }, class: "dropdown-item" %></li>
+      <li>
+        <%= link_to "Sign out",
+                    destroy_user_session_path,
+                    data: { "turbo-method": :delete },
+                    class: "dropdown-item" %>
+      </li>
     </ul>
   </div>
 </div>

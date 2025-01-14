@@ -6,7 +6,7 @@ Rails.application.routes.draw do
   get "up" => "rails/health#show", as: :rails_health_check
 
   devise_for :users, controllers: {
-    registrations: 'users/registrations'
+    registrations: "users/registrations"
   }
   
   # Profile routes
@@ -14,11 +14,15 @@ Rails.application.routes.draw do
   
   # Admin routes
   namespace :admin do
-    get 'dashboard', to: 'dashboard#index', as: :dashboard
-    root to: 'dashboard#index'
+    get "dashboard", to: "dashboard#index", as: :dashboard
     resources :users
   end
+
+  # Root path handling
+  authenticated :user do
+    root to: "admin/dashboard#index", as: :authenticated_root
+  end
   
-  # Defines the root path route ("/")
-  root "home#index"
+  # Default root path for non-authenticated users
+  root to: "home#index"
 end

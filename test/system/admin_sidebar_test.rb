@@ -3,6 +3,12 @@ require "application_system_test_case"
 class AdminSidebarTest < ApplicationSystemTestCase
   include Devise::Test::IntegrationHelpers
 
+  SCREEN_SIZES = [
+    [1400, 800],  # Desktop
+    [768, 1024],  # Tablet
+    [375, 812]    # Mobile
+  ].freeze
+
   setup do
     @admin = users(:admin)
     sign_in @admin
@@ -10,75 +16,91 @@ class AdminSidebarTest < ApplicationSystemTestCase
   end
 
   test "sidebar layout and structure" do
-    # Verify sidebar container
     assert_selector ".d-flex.flex-column.flex-shrink-0.bg-dark.h-100"
-    
-    # Verify sidebar header
     assert_selector ".d-flex.align-items-center.mb-3", text: "Mofongo Admin"
-    assert_selector "hr", count: 2  # One after header, one before user dropdown
+    assert_selector "hr", count: 2
   end
 
   test "navigation menu structure and active states" do
     within(".nav.nav-pills.flex-column") do
-      # Verify Dashboard link and active state
-      dashboard_link = find_link("Dashboard")
-      assert dashboard_link[:class].include?("nav-link"), "Expected link to have nav-link class"
-      assert_includes dashboard_link[:class], "active", "Expected Dashboard to be active"
-      
-      # Click Users link and verify state change
-      click_link "Users"
-      assert_current_path admin_users_path
-      
-      # Verify Users link becomes active and Dashboard becomes inactive
-      assert_selector "a.nav-link.active", text: "Users", wait: 5
-      assert_no_selector "a.nav-link.active", text: "Dashboard", wait: 5
+      verify_dashboard_active_state
+      navigate_to_users_and_verify_state
     end
   end
 
   test "user profile dropdown functionality" do
-    # Verify dropdown structure
-    dropdown_toggle = find("#dropdownUser1")
-    assert_selector ".rounded-circle", text: @admin.name.first
-    assert_text @admin.name
-    
-    # Test dropdown interaction
-    dropdown_toggle.click
-    within(".dropdown-menu") do
-      assert_link "Profile"
-      assert_link "Sign out"
-    end
-    
-    # Test profile navigation
-    click_link "Profile"
-    assert_current_path edit_user_registration_path
+    verify_dropdown_structure
+    verify_dropdown_interaction
+    verify_profile_navigation
   end
 
   test "responsive layout behavior" do
-    # Test at different screen sizes
-    [
-      [1400, 800],  # Desktop
-      [768, 1024],  # Tablet
-      [375, 812]    # Mobile
-    ].each do |width, height|
+    SCREEN_SIZES.each do |width, height|
       page.driver.browser.manage.window.resize_to(width, height)
-      
-      # Verify sidebar remains properly styled
-      assert_selector ".d-flex.flex-column.flex-shrink-0.bg-dark.h-100"
-      assert_selector ".nav.nav-pills.flex-column"
+      verify_sidebar_styling
     end
   end
 
   test "main content interaction with sidebar" do
-    # Verify main content layout
+    verify_main_content_layout
+    add_scrollable_content
+    verify_sidebar_position
+  end
+
+  private
+
+  def verify_dashboard_active_state
+    dashboard_link = find_link("Dashboard")
+    assert dashboard_link[:class].include?("nav-link"),
+           "Expected link to have nav-link class"
+    assert_includes dashboard_link[:class], "active",
+                    "Expected Dashboard to be active"
+  end
+
+  def navigate_to_users_and_verify_state
+    click_link "Users"
+    assert_current_path admin_users_path
+    assert_selector "a.nav-link.active", text: "Users", wait: 5
+    assert_no_selector "a.nav-link.active", text: "Dashboard", wait: 5
+  end
+
+  def verify_dropdown_structure
+    @dropdown_toggle = find("#dropdownUser1")
+    assert_selector ".rounded-circle", text: @admin.name.first
+    assert_text @admin.name
+  end
+
+  def verify_dropdown_interaction
+    @dropdown_toggle.click
+    within(".dropdown-menu") do
+      assert_link "Profile"
+      assert_link "Sign out"
+    end
+  end
+
+  def verify_profile_navigation
+    click_link "Profile"
+    assert_current_path edit_user_registration_path
+  end
+
+  def verify_sidebar_styling
+    assert_selector ".d-flex.flex-column.flex-shrink-0.bg-dark.h-100"
+    assert_selector ".nav.nav-pills.flex-column"
+  end
+
+  def verify_main_content_layout
     assert_selector "main.flex-grow-1.overflow-auto"
-    
-    # Add content to test scrolling
-    execute_script("document.querySelector('main').innerHTML += '<div style=\"height: 2000px;\"></div>'")
-    
-    # Scroll main content
-    execute_script("document.querySelector('main').scrollTop = 500")
-    
-    # Verify sidebar remains in place
+  end
+
+  def add_scrollable_content
+    execute_script(
+      "document.querySelector(\"main\").innerHTML += " \
+      "<div style=\"height: 2000px;\"></div>"
+    )
+    execute_script("document.querySelector(\"main\").scrollTop = 500")
+  end
+
+  def verify_sidebar_position
     sidebar = find(".d-flex.flex-column.flex-shrink-0.bg-dark")
     assert_includes sidebar[:class], "h-100"
   end

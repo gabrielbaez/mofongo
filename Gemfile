@@ -48,17 +48,17 @@ gem "tzinfo-data", platforms: %i[ mingw mswin x64_mingw jruby ]
 gem "bootsnap", require: false
 
 # Authentication
-gem 'devise'
+gem "devise"
 
 # Forms and UI
-gem 'simple_form'
-gem 'country_select'
+gem "simple_form"
+gem "country_select"
 
 # SASS CSS processor
-gem 'sassc-rails'
+gem "sassc-rails"
 
 # Pagination
-gem 'kaminari'
+gem "kaminari"
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
