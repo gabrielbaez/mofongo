@@ -16,6 +16,16 @@ AllCops:
     - 'vendor/**/*'
     - 'node_modules/**/*'
 
+Style/StringLiterals:
+  EnforcedStyle: double_quotes
+  ConsistentQuotesInMultiline: true
+
+Layout/SpaceInsideArrayLiteralBrackets:
+  EnforcedStyle: space
+
+Layout/TrailingWhitespace:
+  Enabled: true
+
 # Overwrite or add rules to create your own house style
 #
 # # Use `[a, [b, c]]` not `[ a, [ b, c ] ]`

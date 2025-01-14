@@ -25,9 +25,17 @@ jobs:
           ruby-version: ${{ env.RUBY_VERSION }}
           bundler-cache: false
 
+      - name: Cache gems
+        uses: actions/cache@v3
+        with:
+          path: vendor/bundle
+          key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-gems-
+
       - name: Bundle config and install
         run: |
-          bundle config --local path vendor/bundle
+          bundle config path vendor/bundle
           bundle lock --add-platform x86_64-linux
           bundle install --jobs 4
 
@@ -47,9 +55,17 @@ jobs:
           ruby-version: ${{ env.RUBY_VERSION }}
           bundler-cache: false
 
+      - name: Cache gems
+        uses: actions/cache@v3
+        with:
+          path: vendor/bundle
+          key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-gems-
+
       - name: Bundle config and install
         run: |
-          bundle config --local path vendor/bundle
+          bundle config path vendor/bundle
           bundle lock --add-platform x86_64-linux
           bundle install --jobs 4
 
@@ -74,14 +90,24 @@ jobs:
           ruby-version: ${{ env.RUBY_VERSION }}
           bundler-cache: false
 
+      - name: Cache gems
+        uses: actions/cache@v3
+        with:
+          path: vendor/bundle
+          key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-gems-
+
       - name: Bundle config and install
         run: |
-          bundle config --local path vendor/bundle
+          bundle config path vendor/bundle
           bundle lock --add-platform x86_64-linux
           bundle install --jobs 4
 
       - name: Lint code for consistent style
-        run: bundle exec rubocop -f github
+        run: |
+          bundle exec rubocop -a -f github
+          bundle exec rubocop -f github
 
   test:
     runs-on: ubuntu-latest
@@ -108,9 +134,17 @@ jobs:
           ruby-version: ${{ env.RUBY_VERSION }}
           bundler-cache: false
 
+      - name: Cache gems
+        uses: actions/cache@v3
+        with:
+          path: vendor/bundle
+          key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-gems-
+
       - name: Bundle config and install
         run: |
-          bundle config --local path vendor/bundle
+          bundle config path vendor/bundle
           bundle lock --add-platform x86_64-linux
           bundle install --jobs 4
 
