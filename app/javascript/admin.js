@@ -8,56 +8,87 @@ var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
 })
 
 // Initialize all popovers
-var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
-var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
+const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]')
+const popoverList = [...popoverTriggerList].map(popoverTriggerEl => {
   return new bootstrap.Popover(popoverTriggerEl)
 })
 
-document.addEventListener('DOMContentLoaded', function() {
-  // Sidebar Toggle
+// Initialize sidebar state (hidden by default)
+function initializeSidebar() {
   const showSidebar = document.getElementById('show-sidebar');
   const closeSidebar = document.getElementById('close-sidebar');
   const pageWrapper = document.querySelector('.page-wrapper');
 
-  if (showSidebar) {
-    showSidebar.addEventListener('click', function(e) {
-      e.preventDefault();
-      pageWrapper.classList.add('toggled');
-    });
+  if (!showSidebar || !closeSidebar || !pageWrapper) {
+    return;
   }
 
-  if (closeSidebar) {
-    closeSidebar.addEventListener('click', function() {
-      pageWrapper.classList.remove('toggled');
-    });
-  }
+  pageWrapper.classList.remove('toggled');
 
-  // Sidebar Dropdowns
-  const dropdowns = document.querySelectorAll('.sidebar-dropdown > a');
-  dropdowns.forEach(dropdown => {
-    dropdown.addEventListener('click', function(e) {
-      e.preventDefault();
-      const parent = this.parentElement;
-      const submenu = parent.querySelector('.sidebar-submenu');
-      
-      // Close other dropdowns
-      const otherDropdowns = document.querySelectorAll('.sidebar-dropdown');
-      otherDropdowns.forEach(other => {
-        if (other !== parent && other.classList.contains('active')) {
-          other.classList.remove('active');
-          other.querySelector('.sidebar-submenu').style.display = 'none';
-        }
-      });
+  showSidebar.addEventListener('click', function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    pageWrapper.classList.add('toggled');
+    console.log('Toggled class added');
+  });
 
-      // Toggle current dropdown
-      parent.classList.toggle('active');
-      if (submenu) {
-        if (submenu.style.display === 'block') {
-          submenu.style.display = 'none';
-        } else {
-          submenu.style.display = 'block';
-        }
+  closeSidebar.addEventListener('click', function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    pageWrapper.classList.remove('toggled');
+    console.log('Toggled class removed');
+  });
+}
+
+// Initialize sidebar when DOM is ready
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initializeSidebar);
+} else {
+  initializeSidebar();
+}
+
+// Also initialize when Turbo loads a new page
+document.addEventListener('turbo:load', initializeSidebar);
+
+// Watch for changes to the DOM in case the sidebar is added dynamically
+const observer = new MutationObserver(function(mutations) {
+  mutations.forEach(function(mutation) {
+    if (mutation.addedNodes.length) {
+      initializeSidebar();
+    }
+  });
+});
+
+observer.observe(document.documentElement, {
+  childList: true,
+  subtree: true
+});
+
+// Sidebar Dropdowns
+const dropdowns = document.querySelectorAll('.sidebar-dropdown > a');
+dropdowns.forEach(dropdown => {
+  dropdown.addEventListener('click', function(e) {
+    e.preventDefault();
+    const parent = this.parentElement;
+    const submenu = parent.querySelector('.sidebar-submenu');
+    
+    // Close other dropdowns
+    const otherDropdowns = document.querySelectorAll('.sidebar-dropdown');
+    otherDropdowns.forEach(other => {
+      if (other !== parent && other.classList.contains('active')) {
+        other.classList.remove('active');
+        other.querySelector('.sidebar-submenu').style.display = 'none';
       }
     });
+
+    // Toggle current dropdown
+    parent.classList.toggle('active');
+    if (submenu) {
+      if (submenu.style.display === 'block') {
+        submenu.style.display = 'none';
+      } else {
+        submenu.style.display = 'block';
+      }
+    }
   });
 });

@@ -11,7 +11,7 @@
         <div class="card-body">
           <div class="row no-gutters align-items-center">
             <div class="col mr-2">
-              <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Total Users</div>
+              <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">TOTAL USERS</div>
               <div class="h5 mb-0 font-weight-bold text-gray-800"><%= User.count %></div>
             </div>
             <div class="col-auto">
@@ -28,7 +28,7 @@
         <div class="card-body">
           <div class="row no-gutters align-items-center">
             <div class="col mr-2">
-              <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Active Users (24h)</div>
+              <div class="text-xs font-weight-bold text-success text-uppercase mb-1">ACTIVE USERS (24H)</div>
               <div class="h5 mb-0 font-weight-bold text-gray-800">
                 <%= User.where('last_sign_in_at > ?', 24.hours.ago).count %>
               </div>
@@ -47,7 +47,7 @@
         <div class="card-body">
           <div class="row no-gutters align-items-center">
             <div class="col mr-2">
-              <div class="text-xs font-weight-bold text-info text-uppercase mb-1">New Users (24h)</div>
+              <div class="text-xs font-weight-bold text-info text-uppercase mb-1">NEW USERS (24H)</div>
               <div class="h5 mb-0 font-weight-bold text-gray-800">
                 <%= User.where('created_at > ?', 24.hours.ago).count %>
               </div>
@@ -66,7 +66,7 @@
         <div class="card-body">
           <div class="row no-gutters align-items-center">
             <div class="col mr-2">
-              <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Environment</div>
+              <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">ENVIRONMENT</div>
               <div class="h5 mb-0 font-weight-bold text-gray-800"><%= Rails.env.capitalize %></div>
             </div>
             <div class="col-auto">

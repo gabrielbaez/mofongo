@@ -12,7 +12,7 @@
   </head>
 
   <body>
-    <div class="page-wrapper chiller-theme toggled">
+    <div class="page-wrapper chiller-theme">
       <a id="show-sidebar" class="btn btn-sm btn-dark" href="#">
         <i class="fas fa-bars"></i>
       </a>
@@ -56,26 +56,11 @@
               </li>
 
               <li>
-                <%= link_to "#", class: "has-submenu" do %>
+                <%= link_to admin_users_path do %>
                   <i class="fas fa-users"></i>
                   <span>Users</span>
                 <% end %>
-                <div class="sidebar-submenu">
-                  <ul>
-                    <li>
-                      <%= link_to admin_users_path do %>
-                        <i class="fas fa-list"></i>
-                        <span>List Users</span>
-                      <% end %>
-                    </li>
-                    <li>
-                      <%= link_to new_admin_user_path do %>
-                        <i class="fas fa-user-plus"></i>
-                        <span>New User</span>
-                      <% end %>
-                    </li>
-                  </ul>
-                </div>
+               
               </li>
             </ul>
           </div>
