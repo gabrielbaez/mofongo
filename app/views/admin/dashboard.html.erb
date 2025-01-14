@@ -1,0 +1,153 @@
+<div class="container-fluid">
+  <div class="row">
+    <!-- Sidebar -->
+    <nav class="col-md-3 col-lg-2 d-md-block bg-light sidebar">
+      <div class="position-sticky pt-3">
+        <ul class="nav flex-column">
+          <li class="nav-item">
+            <%= link_to admin_dashboard_path, class: "nav-link active" do %>
+              <i class="bi bi-speedometer2"></i> Dashboard
+            <% end %>
+          </li>
+          <li class="nav-item">
+            <%= link_to admin_users_path, class: "nav-link" do %>
+              <i class="bi bi-people"></i> Users
+            <% end %>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <!-- Main content -->
+    <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+      <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <h1 class="h2">Dashboard</h1>
+        <div class="btn-toolbar mb-2 mb-md-0">
+          <div class="btn-group me-2">
+            <%= link_to admin_users_path, class: "btn btn-sm btn-outline-primary" do %>
+              <i class="bi bi-people"></i> Manage Users
+            <% end %>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stats Cards -->
+      <div class="row">
+        <div class="col-xl-3 col-md-6 mb-4">
+          <div class="card border-left-primary shadow h-100 py-2 stats-card">
+            <div class="card-body">
+              <div class="row no-gutters align-items-center">
+                <div class="col mr-2">
+                  <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Total Users</div>
+                  <div class="h5 mb-0 font-weight-bold text-gray-800"><%= @total_users %></div>
+                </div>
+                <div class="col-auto">
+                  <i class="bi bi-people fs-2 text-gray-300"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <% @users_by_role.each_with_index do |(role, count), index| %>
+          <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-<%= ['primary', 'success', 'info'][index] %> shadow h-100 py-2 stats-card">
+              <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                  <div class="col mr-2">
+                    <div class="text-xs font-weight-bold text-<%= ['primary', 'success', 'info'][index] %> text-uppercase mb-1">
+                      <%= role.titleize.pluralize %>
+                    </div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800"><%= count %></div>
+                  </div>
+                  <div class="col-auto">
+                    <i class="bi bi-person-badge fs-2 text-gray-300"></i>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+
+      <!-- Recent Users Card -->
+      <div class="row">
+        <div class="col-12">
+          <div class="card shadow mb-4">
+            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+              <h6 class="m-0 font-weight-bold text-primary">Recent Users</h6>
+              <%= link_to admin_users_path, class: "btn btn-sm btn-primary" do %>
+                View All Users
+              <% end %>
+            </div>
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table table-bordered table-hover">
+                  <thead class="table-light">
+                    <tr>
+                      <th>Username</th>
+                      <th>Name</th>
+                      <th>Role</th>
+                      <th>Joined</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <% @recent_users.each do |user| %>
+                      <tr>
+                        <td><%= user.username %></td>
+                        <td><%= user.name %></td>
+                        <td>
+                          <span class="badge bg-<%= user.administrator? ? 'danger' : (user.moderator? ? 'warning' : 'primary') %>">
+                            <%= user.role_id.titleize %>
+                          </span>
+                        </td>
+                        <td><%= user.created_at.strftime('%B %d, %Y') %></td>
+                        <td>
+                          <%= link_to edit_admin_user_path(user), class: 'btn btn-sm btn-primary' do %>
+                            <i class="bi bi-pencil"></i> Edit
+                          <% end %>
+                        </td>
+                      </tr>
+                    <% end %>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- System Info Card -->
+      <div class="row">
+        <div class="col-lg-6">
+          <div class="card shadow mb-4">
+            <div class="card-header py-3">
+              <h6 class="m-0 font-weight-bold text-primary">System Information</h6>
+            </div>
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table table-borderless">
+                  <tbody>
+                    <tr>
+                      <td><strong>Rails Version:</strong></td>
+                      <td><%= Rails.version %></td>
+                    </tr>
+                    <tr>
+                      <td><strong>Ruby Version:</strong></td>
+                      <td><%= RUBY_VERSION %></td>
+                    </tr>
+                    <tr>
+                      <td><strong>Environment:</strong></td>
+                      <td><span class="badge bg-info"><%= Rails.env %></span></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>

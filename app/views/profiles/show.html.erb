@@ -1,0 +1,74 @@
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card">
+        <div class="card-header">
+          <h2 class="text-center">My Profile</h2>
+        </div>
+        <div class="card-body">
+          <div class="row mb-3">
+            <div class="col-sm-4"><strong>Username:</strong></div>
+            <div class="col-sm-8"><%= @user.username %></div>
+          </div>
+
+          <div class="row mb-3">
+            <div class="col-sm-4"><strong>Name:</strong></div>
+            <div class="col-sm-8"><%= @user.name %></div>
+          </div>
+
+          <div class="row mb-3">
+            <div class="col-sm-4"><strong>Email:</strong></div>
+            <div class="col-sm-8"><%= @user.email %></div>
+          </div>
+
+          <div class="row mb-3">
+            <div class="col-sm-4"><strong>Date of Birth:</strong></div>
+            <div class="col-sm-8"><%= @user.date_of_birth.strftime('%B %d, %Y') %></div>
+          </div>
+
+          <div class="row mb-3">
+            <div class="col-sm-4"><strong>Address:</strong></div>
+            <div class="col-sm-8"><%= @user.address %></div>
+          </div>
+
+          <div class="row mb-3">
+            <div class="col-sm-4"><strong>City:</strong></div>
+            <div class="col-sm-8"><%= @user.city %></div>
+          </div>
+
+          <div class="row mb-3">
+            <div class="col-sm-4"><strong>State:</strong></div>
+            <div class="col-sm-8"><%= @user.state %></div>
+          </div>
+
+          <div class="row mb-3">
+            <div class="col-sm-4"><strong>Zip Code:</strong></div>
+            <div class="col-sm-8"><%= @user.zip_code %></div>
+          </div>
+
+          <div class="row mb-3">
+            <div class="col-sm-4"><strong>Country:</strong></div>
+            <div class="col-sm-8"><%= @user.country %></div>
+          </div>
+
+          <div class="row mb-3">
+            <div class="col-sm-4"><strong>Member Since:</strong></div>
+            <div class="col-sm-8"><%= @user.created_at.strftime('%B %d, %Y') %></div>
+          </div>
+
+          <div class="row mb-3">
+            <div class="col-sm-4"><strong>Role:</strong></div>
+            <div class="col-sm-8"><span class="badge bg-<%= @user.administrator? ? 'danger' : (@user.moderator? ? 'warning' : 'primary') %>">
+              <%= @user.role_id.titleize %>
+            </span></div>
+          </div>
+
+          <div class="text-center mt-4">
+            <%= link_to 'Edit Profile', edit_user_registration_path, class: 'btn btn-primary' %>
+            <%= link_to 'Back', :back, class: 'btn btn-secondary ms-2' %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
