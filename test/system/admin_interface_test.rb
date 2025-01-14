@@ -8,70 +8,66 @@ class AdminInterfaceTest < ApplicationSystemTestCase
   test "admin can access dashboard" do
     sign_in_as(@admin)
     visit admin_dashboard_path
-    assert_selector "h1", text: "Admin Dashboard"
+    assert_selector "h1", text: "Dashboard"
+    assert_selector "i.fas.fa-gauge" # Test for dashboard icon
   end
 
   test "admin can navigate using sidebar" do
     sign_in_as(@admin)
     visit admin_dashboard_path
     
-    # Test Users submenu functionality
-    assert_selector "button", text: "Users"
+    # Test Users menu presence
+    assert_selector ".sidebar-menu a", text: "Users"
+    assert_selector "i.fas.fa-users" # Test for users icon
     
     # Initially, submenu should be hidden
-    assert_no_selector "#submenu-users.show"
+    assert_no_selector ".sidebar-submenu ul"
     
     # Click Users menu
-    find("button", text: "Users").click
+    find(".sidebar-menu a", text: "Users").click
     
-    # Submenu should now be visible
-    assert_selector "#submenu-users.show"
-    assert_selector "a", text: "List Users"
-    assert_selector "a", text: "New User"
+    # Submenu should now be visible with proper icons
+    assert_selector ".sidebar-submenu ul"
+    within(".sidebar-submenu") do
+      assert_selector "i.fas.fa-list" # Test for list icon
+      assert_selector "i.fas.fa-user-plus" # Test for new user icon
+      assert_selector "a", text: "List Users"
+      assert_selector "a", text: "New User"
+    end
     
     # Test navigation to users list
     click_link "List Users"
     assert_current_path admin_users_path
     
     # Test navigation to new user form
+    visit admin_dashboard_path # Go back to test navigation again
+    find(".sidebar-menu a", text: "Users").click
     click_link "New User"
     assert_current_path new_admin_user_path
   end
 
-  test "submenu stays open when on users pages" do
-    sign_in_as(@admin)
-    
-    # Visit users index
-    visit admin_users_path
-    
-    # Submenu should be visible because we're in the users section
-    assert_selector "#submenu-users.show"
-    assert_selector "a", text: "List Users"
-    assert_selector "a", text: "New User"
-    
-    # Visit new user page
-    visit new_admin_user_path
-    
-    # Submenu should still be visible
-    assert_selector "#submenu-users.show"
-    assert_selector "a", text: "List Users"
-    assert_selector "a", text: "New User"
-  end
-
-  test "submenu can be toggled multiple times" do
+  test "admin sidebar shows correct user role" do
     sign_in_as(@admin)
     visit admin_dashboard_path
     
-    # First toggle - open
-    find("button", text: "Users").click
-    assert_selector "#submenu-users.show"
+    within(".user-info") do
+      assert_selector ".user-role", text: "Administrator"
+      assert_selector ".user-status", text: "Online"
+    end
+  end
+
+  test "admin can toggle sidebar" do
+    sign_in_as(@admin)
+    visit admin_dashboard_path
     
-    # Second toggle - close
-    find("button", text: "Users").click
-    assert_no_selector "#submenu-users.show"
+    # Test sidebar toggle functionality
+    assert_selector "#show-sidebar"
+    assert_selector "#close-sidebar"
     
-    # Third toggle - open again
-    find("button", text: "Users").click
-    assert_selector "#submenu-users.show"
+    find("#close-sidebar").click
+    assert_no_selector ".page-wrapper.toggled"
+    
+    find("#show-sidebar").click
+    assert_selector ".page-wrapper.toggled"
   end
 end
