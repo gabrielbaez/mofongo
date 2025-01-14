@@ -1,9 +1,15 @@
 class Users::SessionsController < Devise::SessionsController
   respond_to :html, :turbo_stream
-
+  
   # GET /resource/sign_in
   def new
-    super
+    self.resource = resource_class.new
+    respond_to do |format|
+      format.html { super }
+      format.turbo_stream { 
+        render turbo_stream: turbo_stream.update("content", partial: "devise/sessions/form")
+      }
+    end
   end
 
   # POST /resource/sign_in
@@ -13,12 +19,12 @@ class Users::SessionsController < Devise::SessionsController
     yield resource if block_given?
     
     respond_to do |format|
-      format.turbo_stream { 
-        render turbo_stream: turbo_stream.redirect_to(after_sign_in_path_for(resource))
-      }
       format.html { 
         set_flash_message!(:notice, :signed_in)
         respond_with resource, location: after_sign_in_path_for(resource)
+      }
+      format.turbo_stream { 
+        redirect_to after_sign_in_path_for(resource)
       }
     end
   end
@@ -26,25 +32,22 @@ class Users::SessionsController < Devise::SessionsController
   # DELETE /resource/sign_out
   def destroy
     signed_out = (Devise.sign_out_all_scopes ? sign_out : sign_out(resource_name))
+    set_flash_message! :notice, :signed_out if signed_out
     
     respond_to do |format|
-      format.turbo_stream { 
-        render turbo_stream: turbo_stream.redirect_to(after_sign_out_path_for(resource_name))
-      }
-      format.html {
-        set_flash_message! :notice, :signed_out if signed_out
-        redirect_to after_sign_out_path_for(resource_name), status: :see_other
-      }
+      format.html { redirect_to root_path, status: :see_other }
+      format.turbo_stream { redirect_to root_path, status: :see_other }
+      format.all { head :no_content }
     end
   end
 
   protected
 
   def after_sign_in_path_for(resource)
-    stored_location_for(resource) || admin_dashboard_path
+    stored_location_for(resource) || root_path
   end
 
   def after_sign_out_path_for(resource_or_scope)
-    new_user_session_path
+    root_path
   end
 end

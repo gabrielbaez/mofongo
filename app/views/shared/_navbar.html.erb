@@ -37,7 +37,7 @@
               </li>
               <li><hr class="dropdown-divider"></li>
               <li>
-                <%= link_to destroy_user_session_path, class: "dropdown-item text-danger", data: { turbo_method: :delete } do %>
+                <%= button_to destroy_user_session_path, method: :delete, class: "dropdown-item text-danger w-100 text-start", form: { data: { turbo: true } } do %>
                   <i class="bi bi-box-arrow-right"></i> Sign Out
                 <% end %>
               </li>
